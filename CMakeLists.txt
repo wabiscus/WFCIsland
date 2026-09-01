@@ -24,7 +24,8 @@ add_executable(
     src/WFC.cpp
     src/Renderer.cpp
     src/UI.cpp
-
+    src/ShapeGenerator.cpp
+    
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
     external/imgui/imgui_tables.cpp

@@ -8,6 +8,7 @@
 #include "Renderer.hpp"
 #include "UI.hpp"
 #include "WFC.hpp"
+#include "ShapeGenerator.hpp"
 
 int main()
 {
@@ -32,6 +33,7 @@ int main()
     Grid grid(103, 72);
     WFC wfc(grid);
     UI ui;
+    ShapeGenerator shapegen(grid);
 
     if (!window)
     {
@@ -88,7 +90,7 @@ int main()
         renderer.render(grid, 250, 0, ui.isGridVisible());
 
         // ImGui ici si nécessaire
-        ui.render(grid, wfc);
+        ui.render(grid, wfc, shapegen);
 
         // --------------------------------------------------
         // Rendu

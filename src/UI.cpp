@@ -2,7 +2,7 @@
 
 #include "imgui.h"
 
-void UI::render(const Grid &grid, WFC &wfc)
+void UI::render(const Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
 {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImVec2(250, ImGui::GetIO().DisplaySize.y));
@@ -21,12 +21,16 @@ void UI::render(const Grid &grid, WFC &wfc)
     if (ImGui::Button("Reset Grid"))
     {
         wfc.reset();
-        wfc.generate();
+        shapegen.generate(m_influencePointCount);
     }
 
     ImGui::Separator();
 
     ImGui::Checkbox("Show grid", &m_showGrid);
+
+    ImGui::Separator();
+
+    ImGui::SliderInt("Points", &m_influencePointCount, 3, 20);
 
     ImGui::End();
 }
