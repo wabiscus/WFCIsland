@@ -85,7 +85,7 @@ int main()
         SDL_SetRenderDrawColor(sdlRenderer, 20, 20, 20, 255);
         SDL_RenderClear(sdlRenderer);
 
-        renderer.render(grid, 250, 0);
+        renderer.render(grid, 250, 0, ui.isGridVisible());
 
         // ImGui ici si nécessaire
         ui.render(grid, wfc);

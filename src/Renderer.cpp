@@ -6,7 +6,7 @@ Renderer::Renderer(SDL_Renderer* renderer)
 {
 }
 
-void Renderer::render(const Grid& grid, int offsetX, int offsetY)
+void Renderer::render(const Grid& grid, int offsetX, int offsetY, bool showGrid)
 {
     const int cellSize = 10;
 
@@ -37,6 +37,13 @@ void Renderer::render(const Grid& grid, int offsetX, int offsetY)
             }
 
             SDL_RenderFillRect(m_renderer, &rect);
+
+            if (showGrid)
+            {
+                SDL_SetRenderDrawColor(m_renderer, 0,0,0,0);
+                SDL_RenderRect(m_renderer, &rect);
+            }
+            
         }
     }
 }

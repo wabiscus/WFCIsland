@@ -14,8 +14,6 @@ void UI::render(const Grid &grid, WFC &wfc)
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoCollapse);
 
-    ImGui::Text("Grid Information");
-    ImGui::Separator();
     ImGui::Text("Width: %d", grid.getWidth());
     ImGui::Text("Height: %d", grid.getHeight());
 
@@ -26,5 +24,14 @@ void UI::render(const Grid &grid, WFC &wfc)
         wfc.generate();
     }
 
+    ImGui::Separator();
+
+    ImGui::Checkbox("Show grid", &m_showGrid);
+
     ImGui::End();
+}
+
+bool UI::isGridVisible() const
+{
+    return m_showGrid;
 }
