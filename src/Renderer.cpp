@@ -8,7 +8,7 @@ Renderer::Renderer(SDL_Renderer* renderer)
 
 void Renderer::render(const Grid& grid, int offsetX, int offsetY)
 {
-    const int cellSize = 20;
+    const int cellSize = 10;
 
     for (int y = 0; y < grid.getHeight(); ++y)
     {

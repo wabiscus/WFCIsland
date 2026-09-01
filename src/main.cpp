@@ -7,6 +7,7 @@
 #include "Grid.hpp"
 #include "Renderer.hpp"
 #include "UI.hpp"
+#include "WFC.hpp"
 
 int main()
 {
@@ -28,7 +29,8 @@ int main()
         &sdlRenderer);
 
     Renderer renderer(sdlRenderer);
-    Grid grid(51, 36);
+    Grid grid(103, 72);
+    WFC wfc(grid);
     UI ui;
 
     if (!window)
@@ -80,14 +82,13 @@ int main()
         // --------------------------------------------------
         // Interface
         // --------------------------------------------------
-        grid.set(10, 10, Tile::Grass);
         SDL_SetRenderDrawColor(sdlRenderer, 20, 20, 20, 255);
         SDL_RenderClear(sdlRenderer);
 
         renderer.render(grid, 250, 0);
 
         // ImGui ici si nécessaire
-        ui.render(grid);
+        ui.render(grid, wfc);
 
         // --------------------------------------------------
         // Rendu

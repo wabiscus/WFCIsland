@@ -19,6 +19,7 @@ public:
 
     Tile get(int x, int y) const;
     void set(int x, int y, Tile tile);
+    void fill(Tile tile);
 
 private:
     int m_width;
