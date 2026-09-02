@@ -1,10 +1,9 @@
 #include "WFC.hpp"
-#include "Grid.hpp"
 
 #include <random>
 
-WFC::WFC(Grid &grid)
-    : m_grid(grid)
+WFC::WFC(Grid &grid, Ruleset &ruleset)
+    : m_grid(grid), m_ruleset(ruleset)
 {
 }
 
@@ -44,5 +43,38 @@ void WFC::reset()
         {
             m_grid.set(x, y, Tile::Unknown);
         }
+    }
+}
+
+bool WFC::propagateStep()
+{
+    bool changed = false;
+
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            if (x > scope.x &&
+                x < scope.x + scope.width - 1 &&
+                y > scope.y &&
+                y < scope.y + scope.height - 1)
+            {
+                Cell &top = m_grid.get(x, y - 1);
+                Cell &bottom = m_grid.get(x, y + 1);
+                Cell &left = m_grid.get(x - 1, y);
+                Cell &right = m_grid.get(x + 1, y);
+            }
+        }
+    }
+
+    return changed;
+}
+
+void WFC::propagateAll()
+{
+    while (propagateStep())
+    {
     }
 }

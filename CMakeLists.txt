@@ -19,12 +19,12 @@ add_executable(
     WFC
 
     src/main.cpp
-    src/App.cpp
     src/Grid.cpp
     src/WFC.cpp
     src/Renderer.cpp
     src/UI.cpp
     src/ShapeGenerator.cpp
+    src/Ruleset.cpp
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

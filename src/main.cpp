@@ -31,7 +31,8 @@ int main()
 
     Renderer renderer(sdlRenderer);
     Grid grid(72, 72);
-    WFC wfc(grid);
+    Ruleset ruleset(RulesetType::Desert);
+    WFC wfc(grid, ruleset);
     UI UILeft(UIPanel::Left);
     UI UIRight(UIPanel::Right);
     ShapeGenerator shapegen(grid);
