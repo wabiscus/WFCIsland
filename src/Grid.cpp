@@ -77,4 +77,13 @@ std::vector<Tile> getAllTiles()
 
 Cell::Cell() : tile(Tile::Unknown), possibilities(getAllTiles()), possibilityCount(static_cast<int>(possibilities.size())) {}
 
-Cell::Cell(Tile tile) : tile(tile), possibilities({tile}), possibilityCount(1) {}
+Cell::Cell(Tile tile)
+    : Cell()
+{
+    if (tile != Tile::Unknown)
+    {
+        this->tile = tile;
+        this->possibilities = {tile};
+        this->possibilityCount = 1;
+    }
+}

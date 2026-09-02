@@ -17,6 +17,7 @@ public:
     void render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen);
 
     bool isGridVisible() const;
+    bool arePossibilitiesVisible() const;
 
 private:
     UIPanel m_panel = UIPanel::Left;
@@ -25,4 +26,6 @@ private:
     ScopeSize m_scopeSize = ScopeSize::Big;
     float m_sharpness = 2.5f;
     float m_roundness = 0.0f;
+
+    bool m_showPossibilities = false;
 };

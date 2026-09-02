@@ -1,6 +1,6 @@
 #include "UI.hpp"
-
 #include "imgui.h"
+#include <string>
 
 void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
 {
@@ -72,13 +72,41 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
             0.0f,
             5.0f,
             "%.2f");
-        
+
         ImGui::SliderFloat(
             "Roundness",
             &m_roundness,
             -1.0f,
             1.0f,
             "%.2f");
+
+        ImGui::Separator();
+
+        ImGui::Checkbox("Show possibilities", &m_showPossibilities);
+
+        if (m_showPossibilities)
+        {
+            ImDrawList *drawList = ImGui::GetForegroundDrawList();
+            const Scope &scope = grid.getScope();
+
+            for (int y = scope.y; y < scope.y + scope.height; ++y)
+            {
+                for (int x = scope.x; x < scope.x + scope.width; ++x)
+                {
+                    const Cell &cell = grid.get(x, y);
+
+                    std::string count = std::to_string(cell.possibilityCount);
+
+                    float screenX = 280.0f + x * 10.0f;
+                    float screenY = y * 10.0f;
+
+                    drawList->AddText(
+                        ImVec2(screenX, screenY),
+                        IM_COL32(255, 255, 255, 255),
+                        count.c_str());
+                }
+            }
+        }
 
         break;
     }
@@ -106,4 +134,9 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
 bool UI::isGridVisible() const
 {
     return m_showGrid;
+}
+
+bool UI::arePossibilitiesVisible() const
+{
+    return m_showPossibilities;
 }

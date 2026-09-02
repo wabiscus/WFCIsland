@@ -6,7 +6,7 @@ Renderer::Renderer(SDL_Renderer *renderer)
 {
 }
 
-void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
+void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid, bool showPossibilities)
 {
     const int cellSize = 10;
     const Scope &scope = grid.getScope();
@@ -27,7 +27,7 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
             case Tile::Unknown:
                 SDL_SetRenderDrawColor(m_renderer, 40, 40, 40, 255);
                 break;
-                
+
             case Tile::Water:
                 SDL_SetRenderDrawColor(m_renderer, 40, 100, 180, 255);
                 break;
@@ -53,6 +53,7 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
                 SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
                 SDL_RenderRect(m_renderer, &rect);
             }
+
         }
     }
 }

@@ -9,7 +9,7 @@ class Renderer
 public:
     explicit Renderer(SDL_Renderer* renderer);
 
-    void render(const Grid& grid, int offsetX, int offsetY, bool showGrid);
+    void render(const Grid& grid, int offsetX, int offsetY, bool showGrid, bool showPossibilities);
 
 private:
     SDL_Renderer* m_renderer;

@@ -88,7 +88,7 @@ int main()
         SDL_SetRenderDrawColor(sdlRenderer, 20, 20, 20, 255);
         SDL_RenderClear(sdlRenderer);
 
-        renderer.render(grid, 280, 0, UILeft.isGridVisible());
+        renderer.render(grid, 280, 0, UILeft.isGridVisible(), UILeft.arePossibilitiesVisible());
 
         // ImGui ici si nécessaire
         UILeft.render(grid, wfc, shapegen);
