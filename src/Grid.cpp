@@ -3,7 +3,7 @@
 Grid::Grid(int width, int height)
     : m_width(width),
       m_height(height),
-      m_cells(width * height, Tile::Unknown)
+      m_cells(width * height, Cell())
 {
 }
 
@@ -17,14 +17,19 @@ int Grid::getHeight() const
     return m_height;
 }
 
-Tile Grid::get(int x, int y) const
+Cell &Grid::get(int x, int y)
+{
+    return m_cells[y * m_width + x];
+}
+
+const Cell &Grid::get(int x, int y) const
 {
     return m_cells[y * m_width + x];
 }
 
 void Grid::set(int x, int y, Tile tile)
 {
-    m_cells[y * m_width + x] = tile;
+    m_cells[y * m_width + x] = Cell(tile);
 }
 
 void Grid::setScope(ScopeSize size)
@@ -46,7 +51,7 @@ void Grid::setScope(ScopeSize size)
     }
 }
 
-const Scope& Grid::getScope() const
+const Scope &Grid::getScope() const
 {
     return m_scope;
 }
@@ -61,3 +66,15 @@ void Grid::fill(Tile tile)
         }
     }
 }
+
+std::vector<Tile> getAllTiles()
+{
+    return {
+        Tile::Water,
+        Tile::Sand,
+        Tile::Grass};
+}
+
+Cell::Cell() : tile(Tile::Unknown), possibilities(getAllTiles()), possibilityCount(static_cast<int>(possibilities.size())) {}
+
+Cell::Cell(Tile tile) : tile(tile), possibilities({tile}), possibilityCount(1) {}

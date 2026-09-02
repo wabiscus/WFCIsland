@@ -10,6 +10,16 @@ enum class Tile
     Grass
 };
 
+struct Cell
+{
+    Tile tile = Tile::Unknown;
+    std::vector<Tile> possibilities = {Tile::Water, Tile::Sand, Tile::Grass};
+    int possibilityCount = 3;
+
+    Cell();
+    Cell(Tile tile);
+};
+
 enum class ScopeSize
 {
     Small,
@@ -33,18 +43,19 @@ public:
     int getWidth() const;
     int getHeight() const;
 
-    Tile get(int x, int y) const;
+    Cell &get(int x, int y);
+    const Cell &get(int x, int y) const;
     void set(int x, int y, Tile tile);
     void fill(Tile tile);
 
     void setScope(ScopeSize scope);
-    const Scope& getScope() const;
+    const Scope &getScope() const;
 
 private:
     int m_width;
     int m_height;
 
     ScopeSize m_scopeSize = ScopeSize::Big;
-    Scope m_scope = { 0, 0, 72, 72 };
-    std::vector<Tile> m_cells;
+    Scope m_scope = {0, 0, 72, 72};
+    std::vector<Cell> m_cells;
 };

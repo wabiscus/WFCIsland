@@ -22,7 +22,7 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
                 static_cast<float>(cellSize)};
 
             // Couleur de la cellule
-            switch (grid.get(x, y))
+            switch (grid.get(x, y).tile)
             {
             case Tile::Unknown:
                 SDL_SetRenderDrawColor(m_renderer, 40, 40, 40, 255);
