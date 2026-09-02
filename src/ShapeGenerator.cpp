@@ -2,29 +2,74 @@
 #include "Grid.hpp"
 
 #include <random>
+#include <numbers>
+#include <cmath>
+#include <iostream>
 
 ShapeGenerator::ShapeGenerator(Grid &grid) : m_grid(grid)
 {
 }
 
-void ShapeGenerator::generate(int influencePointCount)
+void ShapeGenerator::generate(int influencePointCount, float sharpness, float roundness)
 {
+    m_points.clear();
     std::random_device rd;
     std::mt19937 generator(rd());
 
-    const Scope& scope = m_grid.getScope();
+    const Scope &scope = m_grid.getScope();
 
-    while (influencePointCount > 0)
+    int centerX = scope.x + scope.width / 2;
+    int centerY = scope.y + scope.height / 2;
+
+    float maxRadius =
+        std::min(scope.width, scope.height) / 2.0f - 1.0f;
+
+    float angleStep = 2.0f * std::numbers::pi_v<float> / influencePointCount;
+
+    float maxAngleOffset = angleStep * 0.3f * sharpness;
+
+    float minRadius = maxRadius * 0.7f;
+    float variation = maxRadius - minRadius;
+
+    variation *= (1.0f - roundness);
+
+    for (int i = 0; i < influencePointCount; ++i)
     {
-        std::uniform_int_distribution<int> xDistribution(scope.x, scope.x + scope.width - 1);
+        float angle = i * angleStep;
 
-        std::uniform_int_distribution<int> yDistribution(scope.y, scope.y + scope.height - 1);
+        std::uniform_real_distribution<float> offsetDistribution(
+            -maxAngleOffset,
+            maxAngleOffset);
 
-        int x = xDistribution(generator);
-        int y = yDistribution(generator);
+        angle += offsetDistribution(generator);
 
-        m_grid.set(x, y, Tile::Sand);
+        std::uniform_real_distribution<float> radiusDistribution(
+            0.0f,
+            variation);
 
-        influencePointCount--;
+        float radius = maxRadius - radiusDistribution(generator);
+
+        float x = centerX + std::cos(angle) * radius;
+        float y = centerY + std::sin(angle) * radius;
+
+        InfluencePoint point{
+            static_cast<int>(std::round(x)),
+            static_cast<int>(std::round(y))};
+
+        m_points.push_back(point);
+
+        if (point.x < 0 || point.x >= m_grid.getWidth() ||
+            point.y < 0 || point.y >= m_grid.getHeight())
+        {
+            std::cout << "OUT: "
+                      << point.x << ", "
+                      << point.y << '\n';
+        }
+        m_grid.set(point.x, point.y, Tile::Sand);
     }
+}
+
+void ShapeGenerator::clearPoints()
+{
+    m_points.clear();
 }

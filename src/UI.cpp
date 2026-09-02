@@ -25,7 +25,10 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         if (ImGui::Button("Reset Grid"))
         {
             wfc.reset();
-            shapegen.generate(m_influencePointCount);
+            shapegen.generate(
+                m_influencePointCount,
+                m_sharpness,
+                m_roundness);
         }
 
         ImGui::Separator();
@@ -53,8 +56,25 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
             m_scopeSize = static_cast<ScopeSize>(currentScope);
             grid.setScope(m_scopeSize);
             wfc.reset();
-            shapegen.generate(m_influencePointCount);
+            shapegen.generate(
+                m_influencePointCount,
+                m_sharpness,
+                m_roundness);
         }
+
+        ImGui::Separator();
+
+        ImGui::SliderFloat(
+            "Sharpness",
+            &m_sharpness,
+            0.0f,
+            3.0f);
+
+        ImGui::SliderFloat(
+            "Roundness",
+            &m_roundness,
+            0.0f,
+            1.0f);
 
         break;
     }
