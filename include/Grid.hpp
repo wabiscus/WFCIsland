@@ -4,6 +4,7 @@
 
 enum class Tile
 {
+    Unknown,
     Water,
     Sand,
     Grass

@@ -24,6 +24,10 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
             // Couleur de la cellule
             switch (grid.get(x, y))
             {
+            case Tile::Unknown:
+                SDL_SetRenderDrawColor(m_renderer, 40, 40, 40, 255);
+                break;
+                
             case Tile::Water:
                 SDL_SetRenderDrawColor(m_renderer, 40, 100, 180, 255);
                 break;

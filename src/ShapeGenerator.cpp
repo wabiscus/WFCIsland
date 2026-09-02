@@ -5,6 +5,7 @@
 #include <numbers>
 #include <cmath>
 #include <iostream>
+#include <utility>
 
 ShapeGenerator::ShapeGenerator(Grid &grid) : m_grid(grid)
 {
@@ -72,4 +73,44 @@ void ShapeGenerator::generate(int influencePointCount, float sharpness, float ro
 void ShapeGenerator::clearPoints()
 {
     m_points.clear();
+}
+
+void ShapeGenerator::connectPoints()
+{
+    for (int i = 0; i < m_points.size(); i++)
+    {
+
+        int next = (i + 1) % m_points.size();
+        InfluencePoint point0 = m_points[i];
+        InfluencePoint point1 = m_points[next];
+
+        int x0 = point0.x;
+        int y0 = point0.y;
+        int x1 = point1.x;
+        int y1 = point1.y;
+
+        int dx = std::abs(x1 - x0);
+        int dy = std::abs(y1 - y0);
+        int sx = (x0 < x1) ? 1 : -1;
+        int sy = (y0 < y1) ? 1 : -1;
+        int err = dx - dy;
+        while (true)
+        { // Ajouter le point courant
+            m_grid.set(x0, y0, Tile::Sand);
+            // Arrivée au point final
+            if (x0 == x1 && y0 == y1)
+                break;
+            int e2 = 2 * err;
+            if (e2 > -dy)
+            {
+                err -= dy;
+                x0 += sx;
+            }
+            if (e2 < dx)
+            {
+                err += dx;
+                y0 += sy;
+            }
+        }
+    }
 }

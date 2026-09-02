@@ -16,6 +16,9 @@ public:
 
     void generate(int influencePointCount, float sharpness, float roundness);
     void clearPoints();
+
+    void connectPoints();
+    
 private:
     Grid &m_grid;
     std::vector<InfluencePoint> m_points;

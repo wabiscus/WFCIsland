@@ -3,7 +3,7 @@
 Grid::Grid(int width, int height)
     : m_width(width),
       m_height(height),
-      m_cells(width * height, Tile::Water)
+      m_cells(width * height, Tile::Unknown)
 {
 }
 

@@ -22,13 +22,14 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         ImGui::Text("Height: %d", grid.getHeight());
 
         ImGui::Spacing();
-        if (ImGui::Button("Reset Grid"))
+        if (ImGui::Button("Generate Map"))
         {
             wfc.reset();
             shapegen.generate(
                 m_influencePointCount,
                 m_sharpness,
                 m_roundness);
+            shapegen.connectPoints();
         }
 
         ImGui::Separator();
@@ -60,6 +61,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
                 m_influencePointCount,
                 m_sharpness,
                 m_roundness);
+            shapegen.connectPoints();
         }
 
         ImGui::Separator();
@@ -68,12 +70,12 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
             "Sharpness",
             &m_sharpness,
             0.0f,
-            3.0f);
+            5.0f);
 
         ImGui::SliderFloat(
             "Roundness",
             &m_roundness,
-            0.0f,
+            -1.0f,
             1.0f);
 
         break;
