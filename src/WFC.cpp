@@ -29,20 +29,20 @@ void WFC::generate()
 
 void WFC::reset()
 {
-    m_grid.fill(Tile::Unknown);
-    for (int y = 0; y < m_grid.getHeight(); ++y)
-    {
-        for (int x = 0; x < m_grid.getWidth(); ++x)
-        {
-            if (x == 0 || x == m_grid.getWidth() - 1)
-            {
-                m_grid.set(x, y, Tile::Water);
-            }
+    m_grid.fill(Tile::Water);
 
-            if (y == 0 || y == m_grid.getHeight() - 1)
-            {
-                m_grid.set(x, y, Tile::Water);
-            }
+    const Scope &scope = m_grid.getScope();
+
+    int left = scope.x;
+    int right = scope.x + scope.width - 1;
+    int top = scope.y;
+    int bottom = scope.y + scope.height - 1;
+
+    for (int y = top + 1; y < bottom; ++y)
+    {
+        for (int x = left + 1; x < right; ++x)
+        {
+            m_grid.set(x, y, Tile::Unknown);
         }
     }
 }

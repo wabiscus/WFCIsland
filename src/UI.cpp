@@ -70,13 +70,15 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
             "Sharpness",
             &m_sharpness,
             0.0f,
-            5.0f);
-
+            5.0f,
+            "%.2f");
+        
         ImGui::SliderFloat(
             "Roundness",
             &m_roundness,
             -1.0f,
-            1.0f);
+            1.0f,
+            "%.2f");
 
         break;
     }

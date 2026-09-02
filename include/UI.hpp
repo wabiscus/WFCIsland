@@ -23,6 +23,6 @@ private:
     bool m_showGrid = false;
     int m_influencePointCount = 6;
     ScopeSize m_scopeSize = ScopeSize::Big;
-    float m_sharpness = 0.5f;
-    float m_roundness = 0.5f;
+    float m_sharpness = 2.5f;
+    float m_roundness = 0.0f;
 };
