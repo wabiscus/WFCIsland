@@ -30,9 +30,10 @@ int main()
         &sdlRenderer);
 
     Renderer renderer(sdlRenderer);
-    Grid grid(103, 72);
+    Grid grid(72, 72);
     WFC wfc(grid);
-    UI ui;
+    UI UILeft(UIPanel::Left);
+    UI UIRight(UIPanel::Right);
     ShapeGenerator shapegen(grid);
 
     if (!window)
@@ -87,11 +88,11 @@ int main()
         SDL_SetRenderDrawColor(sdlRenderer, 20, 20, 20, 255);
         SDL_RenderClear(sdlRenderer);
 
-        renderer.render(grid, 250, 0, ui.isGridVisible());
+        renderer.render(grid, 280, 0, UILeft.isGridVisible());
 
         // ImGui ici si nécessaire
-        ui.render(grid, wfc, shapegen);
-
+        UILeft.render(grid, wfc, shapegen);
+        UIRight.render(grid, wfc, shapegen);
         // --------------------------------------------------
         // Rendu
         // --------------------------------------------------

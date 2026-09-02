@@ -1,14 +1,15 @@
 #include "Renderer.hpp"
 #include "Grid.hpp"
 
-Renderer::Renderer(SDL_Renderer* renderer)
+Renderer::Renderer(SDL_Renderer *renderer)
     : m_renderer(renderer)
 {
 }
 
-void Renderer::render(const Grid& grid, int offsetX, int offsetY, bool showGrid)
+void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid)
 {
     const int cellSize = 10;
+    const Scope &scope = grid.getScope();
 
     for (int y = 0; y < grid.getHeight(); ++y)
     {
@@ -18,32 +19,36 @@ void Renderer::render(const Grid& grid, int offsetX, int offsetY, bool showGrid)
                 static_cast<float>(offsetX + x * cellSize),
                 static_cast<float>(offsetY + y * cellSize),
                 static_cast<float>(cellSize),
-                static_cast<float>(cellSize)
-            };
+                static_cast<float>(cellSize)};
 
+            // Couleur de la cellule
             switch (grid.get(x, y))
             {
-                case Tile::Water:
-                    SDL_SetRenderDrawColor(m_renderer, 40, 100, 180, 255);
-                    break;
+            case Tile::Water:
+                SDL_SetRenderDrawColor(m_renderer, 40, 100, 180, 255);
+                break;
 
-                case Tile::Sand:
-                    SDL_SetRenderDrawColor(m_renderer, 220, 190, 120, 255);
-                    break;
+            case Tile::Sand:
+                SDL_SetRenderDrawColor(m_renderer, 220, 190, 120, 255);
+                break;
 
-                case Tile::Grass:
-                    SDL_SetRenderDrawColor(m_renderer, 70, 160, 70, 255);
-                    break;
+            case Tile::Grass:
+                SDL_SetRenderDrawColor(m_renderer, 70, 160, 70, 255);
+                break;
             }
 
             SDL_RenderFillRect(m_renderer, &rect);
 
-            if (showGrid)
+            // Grille uniquement dans le scope
+            if (showGrid &&
+                x >= scope.x &&
+                x < scope.x + scope.width &&
+                y >= scope.y &&
+                y < scope.y + scope.height)
             {
-                SDL_SetRenderDrawColor(m_renderer, 0,0,0,0);
+                SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
                 SDL_RenderRect(m_renderer, &rect);
             }
-            
         }
     }
 }
