@@ -1,6 +1,7 @@
 #include "WFC.hpp"
 
 #include <random>
+#include <set>
 
 WFC::WFC(Grid &grid, Ruleset &ruleset)
     : m_grid(grid), m_ruleset(ruleset)
@@ -26,9 +27,12 @@ void WFC::generate()
     m_grid.set(x, y, Tile::Grass);
 }
 
-void WFC::reset()
+void WFC::regenerateMap()
 {
-    m_grid.fill(Tile::Water);
+    Cell water(Tile::Water);
+    m_grid.fill(water);
+
+    Cell newCell(m_ruleset.getTiles());
 
     const Scope &scope = m_grid.getScope();
 
@@ -41,7 +45,7 @@ void WFC::reset()
     {
         for (int x = left + 1; x < right; ++x)
         {
-            m_grid.set(x, y, Tile::Unknown);
+            m_grid.set(x, y, newCell);
         }
     }
 }
@@ -56,6 +60,12 @@ bool WFC::propagateStep()
     {
         for (int x = scope.x; x < scope.x + scope.width; ++x)
         {
+            Cell &current = m_grid.get(x, y);
+
+            if (current.tile != Tile::Unknown)
+            {
+                continue;
+            }
             if (x > scope.x &&
                 x < scope.x + scope.width - 1 &&
                 y > scope.y &&
@@ -65,6 +75,34 @@ bool WFC::propagateStep()
                 Cell &bottom = m_grid.get(x, y + 1);
                 Cell &left = m_grid.get(x - 1, y);
                 Cell &right = m_grid.get(x + 1, y);
+
+                std::vector<const Cell *> neighbors = {&top, &right, &bottom, &left};
+
+                for (const Cell *neighbor : neighbors)
+                {
+                    std::set<Tile> allowedByNeighbor;
+                    for (Tile neighborPossibility : neighbor->possibilities)
+                    {
+                        for (Tile allowed : m_ruleset.getAllowedNeighbors(neighborPossibility))
+                        {
+                            allowedByNeighbor.insert(allowed);
+                        }
+                    }
+                    for (auto it = current.possibilities.begin();
+                         it != current.possibilities.end();)
+                    {
+                        if (!allowedByNeighbor.contains(*it))
+                        {
+                            it = current.possibilities.erase(it);
+                            --current.possibilityCount;
+                            changed = true;
+                        }
+                        else
+                        {
+                            ++it;
+                        }
+                    }
+                }
             }
         }
     }

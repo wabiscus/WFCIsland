@@ -18,6 +18,7 @@ struct Cell
 
     Cell();
     Cell(Tile tile);
+    Cell(const std::vector<Tile> &tiles);
 };
 
 enum class ScopeSize
@@ -45,8 +46,8 @@ public:
 
     Cell &get(int x, int y);
     const Cell &get(int x, int y) const;
-    void set(int x, int y, Tile tile);
-    void fill(Tile tile);
+    void set(int x, int y, const Cell &cell);
+    void fill(const Cell &cell);
 
     void setScope(ScopeSize scope);
     const Scope &getScope() const;

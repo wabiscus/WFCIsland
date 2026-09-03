@@ -31,7 +31,7 @@ int main()
 
     Renderer renderer(sdlRenderer);
     Grid grid(72, 72);
-    Ruleset ruleset(RulesetType::Desert);
+    Ruleset ruleset(RulesetType::Tropical);
     WFC wfc(grid, ruleset);
     UI UILeft(UIPanel::Left);
     UI UIRight(UIPanel::Right);

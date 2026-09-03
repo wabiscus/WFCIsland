@@ -24,7 +24,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         ImGui::Spacing();
         if (ImGui::Button("Generate Map"))
         {
-            wfc.reset();
+            wfc.regenerateMap();
             shapegen.generate(
                 m_influencePointCount,
                 m_sharpness,
@@ -56,7 +56,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         {
             m_scopeSize = static_cast<ScopeSize>(currentScope);
             grid.setScope(m_scopeSize);
-            wfc.reset();
+            wfc.regenerateMap();
             shapegen.generate(
                 m_influencePointCount,
                 m_sharpness,
@@ -106,6 +106,17 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
                         count.c_str());
                 }
             }
+        }
+
+        ImGui::Separator();
+
+        if (ImGui::Button("Propagate Step"))
+        {
+            wfc.propagateStep();
+        }
+        if (ImGui::Button("Propagate All"))
+        {
+            wfc.propagateAll();
         }
 
         break;

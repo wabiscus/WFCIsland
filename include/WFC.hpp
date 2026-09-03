@@ -10,7 +10,7 @@ public:
 
     void generate();
 
-    void reset();
+    void regenerateMap();
 
     bool propagateStep();
 

@@ -20,6 +20,8 @@ public:
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
     float getWeight(Tile tile) const;
 
+    void setType(RulesetType newRulset);
+
 private:
     RulesetType m_type;
     std::string m_name;

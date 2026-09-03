@@ -55,3 +55,8 @@ std::vector<Tile> Ruleset::getAllowedNeighbors(Tile tile) const
         return {};
     }
 }
+
+const std::vector<Tile> &Ruleset::getTiles() const
+{
+    return m_tiles;
+}
