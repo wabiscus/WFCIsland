@@ -3,6 +3,41 @@
 #include <string>
 #include <cstring>
 
+const char *tileToString(Tile tile)
+{
+    switch (tile)
+    {
+    case Tile::Water:
+        return "Water";
+
+    case Tile::Sand:
+        return "Sand";
+
+    case Tile::Grass:
+        return "Grass";
+
+        // case Tile::Forest:
+        //     return "Forest";
+
+        // case Tile::Rock:
+        //     return "Rock";
+
+        // case Tile::Snow:
+        //     return "Snow";
+
+        // case Tile::Lava:
+        //     return "Lava";
+
+    case Tile::Unknown:
+        return "Unknown";
+
+        // case Tile::Contradiction:
+        //     return "Contradiction";
+    }
+
+    return "Unknown";
+}
+
 void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset)
 {
     switch (m_panel)
@@ -137,7 +172,28 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoCollapse);
 
-        // ImGui::Text("Current Ruleset : %d", ruleset.getName().c_str());
+        ImGui::Text("Current Ruleset : %s", ruleset.getName().c_str());
+
+        ImGui::Separator();
+
+        ImGui::Text("Current Tiles : ");
+        for (const Tile &tile : ruleset.getTiles())
+        {
+            ImGui::Text("%s ", tileToString(tile));
+        }
+
+        ImGui::Separator();
+        
+        ImGui::Text("Current Rules :");
+        for (const Tile &tile : ruleset.getTiles())
+        {
+            ImGui::Text("%s :", tileToString(tile));
+            for (Tile tileNeighbor : ruleset.getAllowedNeighbors(tile))
+            {
+                ImGui::SameLine();
+                ImGui::Text("%s", tileToString(tileNeighbor));
+            }
+        }
         break;
     }
     default:

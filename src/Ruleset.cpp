@@ -60,3 +60,8 @@ const std::vector<Tile> &Ruleset::getTiles() const
 {
     return m_tiles;
 }
+
+const std::string &Ruleset::getName() const
+{
+    return m_name;
+}
