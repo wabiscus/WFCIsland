@@ -1,8 +1,9 @@
 #include "UI.hpp"
 #include "imgui.h"
 #include <string>
+#include <cstring>
 
-void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
+void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset)
 {
     switch (m_panel)
     {
@@ -95,7 +96,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
                 {
                     const Cell &cell = grid.get(x, y);
 
-                    std::string count = std::to_string(cell.possibilityCount);
+                    std::string count = std::to_string(cell.entropy);
 
                     float screenX = 280.0f + x * 10.0f;
                     float screenY = y * 10.0f;
@@ -118,6 +119,10 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         {
             wfc.propagateAll();
         }
+        if (ImGui::Button("Collapse"))
+        {
+            wfc.collapse();
+        }
 
         break;
     }
@@ -126,11 +131,13 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen)
         ImGui::SetNextWindowPos(ImVec2(1000, 0));
         ImGui::SetNextWindowSize(ImVec2(280, ImGui::GetIO().DisplaySize.y));
         ImGui::Begin(
-            "Info",
+            "Ruleset",
             nullptr,
             ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoCollapse);
+
+        // ImGui::Text("Current Ruleset : %d", ruleset.getName().c_str());
         break;
     }
     default:

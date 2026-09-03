@@ -67,7 +67,7 @@ void Grid::fill(const Cell& cell)
     }
 }
 
-Cell::Cell() : tile(Tile::Unknown), possibilities(), possibilityCount(0) {}
+Cell::Cell() : tile(Tile::Unknown), possibilities(), entropy(0) {}
 
 Cell::Cell(Tile tile)
     : Cell()
@@ -76,8 +76,8 @@ Cell::Cell(Tile tile)
     {
         this->tile = tile;
         this->possibilities = {tile};
-        this->possibilityCount = 1;
+        this->entropy = 1;
     }
 }
 
-Cell::Cell(const std::vector<Tile> &tiles) : tile(Tile::Unknown), possibilities(tiles), possibilityCount(static_cast<int>(possibilities.size())) {}
+Cell::Cell(const std::vector<Tile> &tiles) : tile(Tile::Unknown), possibilities(tiles), entropy(static_cast<int>(possibilities.size())) {}

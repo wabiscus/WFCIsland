@@ -3,6 +3,14 @@
 #include "Grid.hpp"
 #include "Ruleset.hpp"
 
+#include <random>
+
+struct Candidate
+{
+    int x;
+    int y;
+};
+
 class WFC
 {
 public:
@@ -16,7 +24,10 @@ public:
 
     void propagateAll();
 
+    void collapse();
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;
+    std::mt19937 m_generator;
 };

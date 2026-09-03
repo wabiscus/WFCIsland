@@ -1,18 +1,14 @@
 #include "WFC.hpp"
 
-#include <random>
 #include <set>
 
 WFC::WFC(Grid &grid, Ruleset &ruleset)
-    : m_grid(grid), m_ruleset(ruleset)
+    : m_grid(grid), m_ruleset(ruleset), m_generator(std::random_device{}())
 {
 }
 
 void WFC::generate()
 {
-    std::random_device rd;
-    std::mt19937 generator(rd());
-
     std::uniform_int_distribution<int> xDistribution(
         0,
         m_grid.getWidth() - 1);
@@ -21,8 +17,8 @@ void WFC::generate()
         0,
         m_grid.getHeight() - 1);
 
-    int x = xDistribution(generator);
-    int y = yDistribution(generator);
+    int x = xDistribution(m_generator);
+    int y = yDistribution(m_generator);
 
     m_grid.set(x, y, Tile::Grass);
 }
@@ -94,7 +90,7 @@ bool WFC::propagateStep()
                         if (!allowedByNeighbor.contains(*it))
                         {
                             it = current.possibilities.erase(it);
-                            --current.possibilityCount;
+                            --current.entropy;
                             changed = true;
                         }
                         else
@@ -114,5 +110,47 @@ void WFC::propagateAll()
 {
     while (propagateStep())
     {
+        collapse();
     }
+}
+
+void WFC::collapse()
+{
+    std::vector<Candidate> candidates;
+    int lowestEntropy = INT_MAX;
+
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            Cell &cell = m_grid.get(x, y);
+            if (cell.tile != Tile::Unknown)
+            {
+                continue;
+            }
+
+            if (cell.entropy < lowestEntropy)
+            {
+                lowestEntropy = cell.entropy;
+                candidates.clear();
+                candidates.push_back({x, y});
+            }
+            else if (cell.entropy == lowestEntropy)
+            {
+                candidates.push_back({x, y});
+            }
+        }
+    }
+
+    std::uniform_int_distribution<std::size_t> distribution(0, candidates.size() - 1);
+    Candidate selectedCandidate = candidates[distribution(m_generator)];
+
+    Cell &cell = m_grid.get(selectedCandidate.x, selectedCandidate.y);
+
+    std::uniform_int_distribution<std::size_t> tileDistribution(0, cell.possibilities.size() - 1);
+    Tile selectedTile = cell.possibilities[tileDistribution(m_generator)];
+
+    m_grid.set(selectedCandidate.x, selectedCandidate.y, Cell(selectedTile));
 }

@@ -14,7 +14,7 @@ struct Cell
 {
     Tile tile = Tile::Unknown;
     std::vector<Tile> possibilities = {Tile::Water, Tile::Sand, Tile::Grass};
-    int possibilityCount = 3;
+    int entropy = 3;
 
     Cell();
     Cell(Tile tile);

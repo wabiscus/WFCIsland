@@ -14,7 +14,7 @@ class UI
 {
 public:
     explicit UI(UIPanel panel) : m_panel(panel) {};
-    void render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen);
+    void render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset);
 
     bool isGridVisible() const;
     bool arePossibilitiesVisible() const;
