@@ -30,9 +30,12 @@ int main()
         &sdlRenderer);
 
     Renderer renderer(sdlRenderer);
-    Grid grid(72, 72);
     Ruleset ruleset(RulesetType::Tropical);
+    Grid grid(72, 72);
+
     WFC wfc(grid, ruleset);
+    wfc.initialize();
+
     UI UILeft(UIPanel::Left);
     UI UIRight(UIPanel::Right);
     ShapeGenerator shapegen(grid);

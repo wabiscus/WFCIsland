@@ -7,7 +7,8 @@ enum class Tile
     Unknown,
     Water,
     Sand,
-    Grass
+    Grass,
+    Contradiction
 };
 
 struct Cell

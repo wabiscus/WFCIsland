@@ -39,6 +39,10 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
             case Tile::Grass:
                 SDL_SetRenderDrawColor(m_renderer, 70, 160, 70, 255);
                 break;
+
+            case Tile::Contradiction:
+                SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+                break;
             }
 
             SDL_RenderFillRect(m_renderer, &rect);
@@ -53,7 +57,6 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
                 SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
                 SDL_RenderRect(m_renderer, &rect);
             }
-
         }
     }
 }

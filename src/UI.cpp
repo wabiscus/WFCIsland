@@ -194,9 +194,9 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
 
         ImGui::Separator();
 
-        if (ImGui::Button("Propagate Step"))
+        if (ImGui::Button("Propagate Until Stable"))
         {
-            wfc.propagateStep();
+            wfc.propagateUntilStable();
         }
         if (ImGui::Button("Collapse Step"))
         {
@@ -204,7 +204,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         }
         if (ImGui::Button("Generate Island"))
         {
-            wfc.propagateAll();
+            wfc.generateIsland();
         }
 
         break;
@@ -220,29 +220,79 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoCollapse);
 
-        ImGui::Text("Current Ruleset : %s", ruleset.getName().c_str());
-
-        ImGui::Separator();
-
-        ImGui::Text("Current Tiles : ");
-        for (const Tile &tile : ruleset.getTiles())
+        if (ImGui::BeginTabBar("MyTabs"))
         {
-            drawTileLabel(tile);
-        }
-
-        ImGui::Separator();
-
-        ImGui::Text("Current Rules :");
-        for (const Tile &tile : ruleset.getTiles())
-        {
-            drawTileLabel(tile);
-            ImGui::Text("  -> ");
-            for (Tile tileNeighbor : ruleset.getAllowedNeighbors(tile))
+            if (ImGui::BeginTabItem("Ruleset"))
             {
-                drawTileLabel(tileNeighbor);
+                ImGui::Text("Current Ruleset : %s", ruleset.getName().c_str());
+
+                ImGui::Separator();
+
+                ImGui::Text("Current Tiles : ");
+                for (const Tile &tile : ruleset.getTiles())
+                {
+                    drawTileLabel(tile);
+                }
+
+                ImGui::Separator();
+
+                ImGui::Text("Current Rules :");
+                for (const Tile &tile : ruleset.getTiles())
+                {
+                    drawTileLabel(tile);
+                    ImGui::Text("  -> ");
+                    for (Tile tileNeighbor : ruleset.getAllowedNeighbors(tile))
+                    {
+                        drawTileLabel(tileNeighbor);
+                    }
+                    ImGui::Separator();
+                }
+
+                if (ImGui::BeginTabBar("TileWeights"))
+                {
+                    const auto &allWeights = ruleset.getWeights();
+
+                    for (const auto &[possibilities, weights] : allWeights)
+                    {
+                        std::string tabName = "{";
+
+                        for (std::size_t i = 0; i < possibilities.size(); ++i)
+                        {
+                            if (i > 0)
+                                tabName += ", ";
+
+                            tabName += tileToString(possibilities[i]);
+                        }
+
+                        tabName += "}";
+
+                        if (ImGui::BeginTabItem(tabName.c_str()))
+                        {
+                            std::vector<int> &editableWeights =
+                                ruleset.getWeights(possibilities);
+
+                            for (std::size_t i = 0; i < possibilities.size(); ++i)
+                            {
+                                ImGui::SliderInt(
+                                    tileToString(possibilities[i]),
+                                    &editableWeights[i],
+                                    1,
+                                    10);
+                            }
+
+                            ImGui::EndTabItem();
+                        }
+                    }
+
+                    ImGui::EndTabBar();
+                }
+
+                ImGui::EndTabItem();
             }
-            ImGui::Separator();
+
+            ImGui::EndTabBar();
         }
+
         break;
     }
     default:

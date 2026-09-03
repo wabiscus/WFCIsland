@@ -13,6 +13,9 @@ Ruleset::Ruleset(RulesetType type)
             Tile::Grass,
             // Tile::Forest
         };
+        m_weights[{Tile::Water, Tile::Sand}] = {8, 2};
+        m_weights[{Tile::Water, Tile::Sand, Tile::Grass}] = {1, 4, 5};
+        m_weights[{Tile::Sand, Tile::Grass}] = {4, 6};
         break;
 
     case RulesetType::Desert:
@@ -22,6 +25,7 @@ Ruleset::Ruleset(RulesetType type)
             Tile::Sand,
             // Tile::Rock
         };
+        m_weights[{Tile::Water, Tile::Sand}] = {5, 6};
         break;
 
     case RulesetType::Volcanic:
@@ -64,4 +68,21 @@ const std::vector<Tile> &Ruleset::getTiles() const
 const std::string &Ruleset::getName() const
 {
     return m_name;
+}
+
+const std::map<std::vector<Tile>, std::vector<int>> &Ruleset::getWeights() const
+{
+    return m_weights;
+}
+
+std::vector<int> &Ruleset::getWeights(const std::vector<Tile> &possibilities)
+{
+    return m_weights.at(possibilities);
+}
+
+void Ruleset::setWeights(
+    const std::vector<Tile> &tile,
+    const std::vector<int> &weights)
+{
+    m_weights[tile] = weights;
 }

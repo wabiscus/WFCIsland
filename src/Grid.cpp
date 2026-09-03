@@ -3,7 +3,7 @@
 Grid::Grid(int width, int height)
     : m_width(width),
       m_height(height),
-      m_cells(width * height, Cell())
+      m_cells(width * height, Cell(Tile::Unknown))
 {
 }
 
@@ -80,4 +80,4 @@ Cell::Cell(Tile tile)
     }
 }
 
-Cell::Cell(const std::vector<Tile> &tiles) : tile(Tile::Unknown), possibilities(tiles), entropy(static_cast<int>(possibilities.size())) {}
+Cell::Cell(const std::vector<Tile> &tiles) : tile(Tile::Unknown), possibilities(tiles), entropy(static_cast<int>(tiles.size())) {}

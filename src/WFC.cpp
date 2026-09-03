@@ -1,10 +1,24 @@
 #include "WFC.hpp"
 
 #include <set>
+#include <iostream>
 
 WFC::WFC(Grid &grid, Ruleset &ruleset)
     : m_grid(grid), m_ruleset(ruleset), m_generator(std::random_device{}())
 {
+}
+
+void WFC::initialize()
+{
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            m_grid.set(x, y, Cell(m_ruleset.getTiles()));
+        }
+    }
 }
 
 void WFC::generate()
@@ -27,6 +41,8 @@ void WFC::regenerateMap()
 {
     Cell water(Tile::Water);
     m_grid.fill(water);
+
+    m_contradiction = false;
 
     Cell newCell(m_ruleset.getTiles());
 
@@ -92,6 +108,12 @@ bool WFC::propagateStep()
                             it = current.possibilities.erase(it);
                             --current.entropy;
                             changed = true;
+
+                            if (current.possibilities.empty())
+                            {
+                                current.tile = Tile::Contradiction;
+                                m_contradiction = true;
+                            }
                         }
                         else
                         {
@@ -106,11 +128,10 @@ bool WFC::propagateStep()
     return changed;
 }
 
-void WFC::propagateAll()
+void WFC::propagateUntilStable()
 {
     while (propagateStep())
     {
-        collapse();
     }
 }
 
@@ -126,7 +147,8 @@ void WFC::collapse()
         for (int x = scope.x; x < scope.x + scope.width; ++x)
         {
             Cell &cell = m_grid.get(x, y);
-            if (cell.tile != Tile::Unknown)
+            if (cell.tile != Tile::Unknown ||
+                cell.possibilities.empty())
             {
                 continue;
             }
@@ -153,4 +175,59 @@ void WFC::collapse()
     Tile selectedTile = cell.possibilities[tileDistribution(m_generator)];
 
     m_grid.set(selectedCandidate.x, selectedCandidate.y, Cell(selectedTile));
+}
+
+bool WFC::hasContradiction() const
+{
+    return m_contradiction;
+}
+
+bool WFC::hasUnknownCells() const
+{
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            if (m_grid.get(x, y).tile == Tile::Unknown)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void WFC::generateIsland()
+{
+    int collapseCount = 0;
+
+    propagateUntilStable();
+
+    while (hasUnknownCells())
+    {
+        std::cout << "Collapse: " << collapseCount << '\n';
+
+        collapse();
+
+        propagateUntilStable();
+
+        ++collapseCount;
+
+        if (hasContradiction())
+        {
+            std::cout << "Contradiction!\n";
+            return;
+        }
+
+        if (collapseCount > 10000)
+        {
+            std::cout << "Generation stopped: too many collapses.\n";
+            return;
+        }
+    }
+
+    std::cout << "Generation finished.\n";
 }
