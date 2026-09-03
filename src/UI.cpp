@@ -38,6 +38,54 @@ const char *tileToString(Tile tile)
     return "Unknown";
 }
 
+ImU32 tileToColor(Tile tile)
+{
+    switch (tile)
+    {
+    case Tile::Water:
+        return IM_COL32(50, 120, 220, 255);
+
+    case Tile::Sand:
+        return IM_COL32(220, 190, 120, 255);
+
+    case Tile::Grass:
+        return IM_COL32(80, 180, 80, 255);
+
+        // case Tile::Forest:
+        //     return IM_COL32(30, 110, 50, 255);
+
+        // case Tile::Rock:
+        //     return IM_COL32(100, 100, 100, 255);
+
+        // case Tile::Snow:
+        //     return IM_COL32(230, 230, 240, 255);
+
+        // case Tile::Lava:
+        //     return IM_COL32(220, 70, 30, 255);
+
+    default:
+        return IM_COL32(150, 150, 150, 255);
+    }
+}
+
+void drawTileLabel(Tile tile)
+{
+    ImGui::Text("%s", tileToString(tile));
+    ImGui::SameLine();
+
+    ImDrawList *drawList = ImGui::GetWindowDrawList();
+
+    ImVec2 pos = ImGui::GetCursorScreenPos();
+    constexpr float size = 12.0f;
+
+    drawList->AddRectFilled(
+        pos,
+        ImVec2(pos.x + size, pos.y + size),
+        tileToColor(tile));
+
+    ImGui::Dummy(ImVec2(size, size));
+}
+
 void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset)
 {
     switch (m_panel)
@@ -58,7 +106,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         ImGui::Text("Height: %d", grid.getHeight());
 
         ImGui::Spacing();
-        if (ImGui::Button("Generate Map"))
+        if (ImGui::Button("Generate Island Shape"))
         {
             wfc.regenerateMap();
             shapegen.generate(
@@ -150,13 +198,13 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             wfc.propagateStep();
         }
-        if (ImGui::Button("Propagate All"))
-        {
-            wfc.propagateAll();
-        }
-        if (ImGui::Button("Collapse"))
+        if (ImGui::Button("Collapse Step"))
         {
             wfc.collapse();
+        }
+        if (ImGui::Button("Generate Island"))
+        {
+            wfc.propagateAll();
         }
 
         break;
@@ -179,20 +227,21 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         ImGui::Text("Current Tiles : ");
         for (const Tile &tile : ruleset.getTiles())
         {
-            ImGui::Text("%s ", tileToString(tile));
+            drawTileLabel(tile);
         }
 
         ImGui::Separator();
-        
+
         ImGui::Text("Current Rules :");
         for (const Tile &tile : ruleset.getTiles())
         {
-            ImGui::Text("%s :", tileToString(tile));
+            drawTileLabel(tile);
+            ImGui::Text("  -> ");
             for (Tile tileNeighbor : ruleset.getAllowedNeighbors(tile))
             {
-                ImGui::SameLine();
-                ImGui::Text("%s", tileToString(tileNeighbor));
+                drawTileLabel(tileNeighbor);
             }
+            ImGui::Separator();
         }
         break;
     }
