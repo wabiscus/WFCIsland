@@ -114,3 +114,55 @@ void ShapeGenerator::connectPoints()
         }
     }
 }
+
+bool ShapeGenerator::isInside(int x, int y) const
+{
+    bool inside = false;
+
+    const int pointCount = static_cast<int>(m_points.size());
+
+    for (int i = 0, j = pointCount - 1; i < pointCount; j = i++)
+    {
+        const InfluencePoint &current = m_points[i];
+        const InfluencePoint &previous = m_points[j];
+
+        const bool crossesY =
+            ((current.y > y) != (previous.y > y));
+
+        if (!crossesY)
+        {
+            continue;
+        }
+
+        const float intersectionX =
+            static_cast<float>(previous.x - current.x) *
+                static_cast<float>(y - current.y) /
+                static_cast<float>(previous.y - current.y) +
+            static_cast<float>(current.x);
+
+        if (static_cast<float>(x) < intersectionX)
+        {
+            inside = !inside;
+        }
+    }
+
+    return inside;
+}
+
+void ShapeGenerator::fillOutsideWithWater()
+{
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            Cell &cell = m_grid.get(x, y);
+
+            if (cell.tile == Tile::Unknown && !isInside(x, y))
+            {
+                cell = Cell(Tile::Water);
+            }
+        }
+    }
+}

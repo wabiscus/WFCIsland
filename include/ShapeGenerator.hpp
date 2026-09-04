@@ -18,6 +18,8 @@ public:
     void clearPoints();
 
     void connectPoints();
+
+    void fillOutsideWithWater();
     
 private:
     Grid &m_grid;
@@ -25,4 +27,6 @@ private:
 
     float m_sharpness = 0.0f;
     float m_roundness = 1.0f;
+
+    bool isInside(int x, int y) const;
 };
