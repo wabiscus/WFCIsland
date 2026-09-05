@@ -234,3 +234,8 @@ void WFC::startGeneration()
 {
     m_generating = true;
 }
+
+void WFC::toggleGeneration()
+{
+    m_generating = !m_generating;
+}

@@ -193,11 +193,13 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
 
                     float screenX = 280.0f + x * 10.0f;
                     float screenY = y * 10.0f;
-
-                    drawList->AddText(
-                        ImVec2(screenX, screenY),
-                        IM_COL32(255, 255, 255, 255),
-                        count.c_str());
+                    if (count != "1")
+                    {
+                        drawList->AddText(
+                            ImVec2(screenX, screenY),
+                            IM_COL32(255, 255, 255, 255),
+                            count.c_str());
+                    }
                 }
             }
         }
@@ -237,6 +239,11 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         if (ImGui::Button("Generate"))
         {
             wfc.startGeneration();
+        }
+
+        if (ImGui::Button(wfc.isGenerating() ? "Pause" : "Play"))
+        {
+            wfc.toggleGeneration();
         }
 
         if (ImGui::Button("Restore Island Shape"))

@@ -31,6 +31,7 @@ public:
     bool isGenerating() const;
 
     void startGeneration();
+    void toggleGeneration();
 
 private:
     Grid &m_grid;
