@@ -27,7 +27,7 @@ const Cell &Grid::get(int x, int y) const
     return m_cells[y * m_width + x];
 }
 
-void Grid::set(int x, int y, const Cell& cell)
+void Grid::set(int x, int y, const Cell &cell)
 {
     m_cells[y * m_width + x] = cell;
 }
@@ -56,7 +56,7 @@ const Scope &Grid::getScope() const
     return m_scope;
 }
 
-void Grid::fill(const Cell& cell)
+void Grid::fill(const Cell &cell)
 {
     for (int y = 0; y < m_height; ++y)
     {
@@ -65,6 +65,40 @@ void Grid::fill(const Cell& cell)
             set(x, y, cell);
         }
     }
+}
+
+const std::vector<CellPosition> &Grid::getUnknownCells() const
+{
+    return m_unknownCells;
+}
+
+void Grid::updateUnknownCells()
+{
+    m_unknownCells.clear();
+
+    const Scope &scope = m_scope;
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            if (get(x, y).tile == Tile::Unknown)
+            {
+                m_unknownCells.push_back({x, y});
+            }
+        }
+    }
+}
+
+bool Grid::hasUnknownCells() const
+{
+    return !m_unknownCells.empty();
+}
+
+void Grid::removeUnknownCell(std::size_t index)
+{
+    m_unknownCells[index] = m_unknownCells.back();
+    m_unknownCells.pop_back();
 }
 
 Cell::Cell() : tile(Tile::Unknown), possibilities(), entropy(0) {}

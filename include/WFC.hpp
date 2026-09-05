@@ -23,8 +23,6 @@ public:
     void collapse();
 
     bool hasContradiction() const;
-    
-    bool hasUnknownCells() const;
 
     void generateIsland();
 

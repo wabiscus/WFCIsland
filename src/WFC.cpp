@@ -137,67 +137,57 @@ void WFC::propagateUntilStable()
 
 void WFC::collapse()
 {
-    std::vector<CellPosition> candidates;
     int lowestEntropy = INT_MAX;
+    std::vector<std::size_t> candidates;
 
-    const Scope &scope = m_grid.getScope();
-
-    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    for (std::size_t i = 0; i < m_grid.getUnknownCells().size(); ++i)
     {
-        for (int x = scope.x; x < scope.x + scope.width; ++x)
-        {
-            Cell &cell = m_grid.get(x, y);
-            if (cell.tile != Tile::Unknown ||
-                cell.possibilities.empty())
-            {
-                continue;
-            }
+        const CellPosition &position = m_grid.getUnknownCells()[i];
+        const Cell &cell = m_grid.get(position.x, position.y);
 
-            if (cell.entropy < lowestEntropy)
-            {
-                lowestEntropy = cell.entropy;
-                candidates.clear();
-                candidates.push_back({x, y});
-            }
-            else if (cell.entropy == lowestEntropy)
-            {
-                candidates.push_back({x, y});
-            }
+        if (cell.entropy < lowestEntropy)
+        {
+            lowestEntropy = cell.entropy;
+            candidates.clear();
+            candidates.push_back(i);
+        }
+        else if (cell.entropy == lowestEntropy)
+        {
+            candidates.push_back(i);
         }
     }
 
-    std::uniform_int_distribution<std::size_t> distribution(0, candidates.size() - 1);
-    CellPosition selectedCandidate = candidates[distribution(m_generator)];
+    std::uniform_int_distribution<std::size_t> candidateDistribution(
+        0,
+        candidates.size() - 1);
 
-    Cell &cell = m_grid.get(selectedCandidate.x, selectedCandidate.y);
+    const std::size_t selectedIndex = candidates[candidateDistribution(m_generator)];
 
-    std::uniform_int_distribution<std::size_t> tileDistribution(0, cell.possibilities.size() - 1);
-    Tile selectedTile = cell.possibilities[tileDistribution(m_generator)];
+    const CellPosition position =
+        m_grid.getUnknownCells()[selectedIndex];
 
-    m_grid.set(selectedCandidate.x, selectedCandidate.y, Cell(selectedTile));
+    Cell &cell = m_grid.get(position.x, position.y);
+
+    const std::vector<Tile> &possibilities = cell.possibilities;
+
+    const std::vector<int> &weights =
+        m_ruleset.getWeights(possibilities);
+
+    std::discrete_distribution<std::size_t> distribution(
+        weights.begin(),
+        weights.end());
+
+    const Tile selectedTile =
+        possibilities[distribution(m_generator)];
+
+    m_grid.set(position.x, position.y, Cell(selectedTile));
+
+    m_grid.removeUnknownCell(selectedIndex);
 }
 
 bool WFC::hasContradiction() const
 {
     return m_contradiction;
-}
-
-bool WFC::hasUnknownCells() const
-{
-    const Scope &scope = m_grid.getScope();
-
-    for (int y = scope.y; y < scope.y + scope.height; ++y)
-    {
-        for (int x = scope.x; x < scope.x + scope.width; ++x)
-        {
-            if (m_grid.get(x, y).tile == Tile::Unknown)
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
 }
 
 void WFC::generateIsland()
@@ -206,7 +196,7 @@ void WFC::generateIsland()
 
     propagateUntilStable();
 
-    while (hasUnknownCells())
+    while (m_grid.hasUnknownCells())
     {
         std::cout << "Collapse: " << collapseCount << '\n';
 

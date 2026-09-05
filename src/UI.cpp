@@ -116,6 +116,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 m_roundness);
             shapegen.connectPoints();
             shapegen.fillOutsideWithWater();
+            grid.updateUnknownCells();
             m_isShapeGenerated = true;
         }
 
@@ -152,6 +153,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 m_roundness);
             shapegen.connectPoints();
             shapegen.fillOutsideWithWater();
+            grid.updateUnknownCells();
         }
 
         ImGui::Separator();

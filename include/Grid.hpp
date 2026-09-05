@@ -56,6 +56,11 @@ public:
     void set(int x, int y, const Cell &cell);
     void fill(const Cell &cell);
 
+    void updateUnknownCells();
+    bool hasUnknownCells() const;
+    const std::vector<CellPosition> &getUnknownCells() const;
+    void removeUnknownCell(std::size_t index);
+
     void setScope(ScopeSize scope);
     const Scope &getScope() const;
 
