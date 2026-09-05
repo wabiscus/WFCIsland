@@ -5,12 +5,6 @@
 
 #include <random>
 
-struct Candidate
-{
-    int x;
-    int y;
-};
-
 class WFC
 {
 public:

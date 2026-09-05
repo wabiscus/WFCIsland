@@ -28,5 +28,6 @@ private:
     float m_roundness = 0.0f;
 
     bool m_showPossibilities = false;
+    bool m_isShapeGenerated = false;
     bool m_isIslandGenerated = false;
 };

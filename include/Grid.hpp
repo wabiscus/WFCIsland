@@ -22,6 +22,12 @@ struct Cell
     Cell(const std::vector<Tile> &tiles);
 };
 
+struct CellPosition
+{
+    int x;
+    int y;
+};
+
 enum class ScopeSize
 {
     Small,
@@ -60,4 +66,5 @@ private:
     ScopeSize m_scopeSize = ScopeSize::Big;
     Scope m_scope = {0, 0, 72, 72};
     std::vector<Cell> m_cells;
+    std::vector<CellPosition> m_unknownCells;
 };

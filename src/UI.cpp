@@ -116,6 +116,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 m_roundness);
             shapegen.connectPoints();
             shapegen.fillOutsideWithWater();
+            m_isShapeGenerated = true;
         }
 
         ImGui::Separator();
@@ -142,6 +143,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             m_scopeSize = static_cast<ScopeSize>(currentScope);
             m_isIslandGenerated = false;
+            m_isShapeGenerated = true;
             grid.setScope(m_scopeSize);
             wfc.regenerateMap();
             shapegen.generate(
@@ -202,7 +204,6 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             ImGui::BeginDisabled();
         }
-        
 
         if (ImGui::Button("Propagate Until Stable"))
         {
@@ -217,12 +218,21 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             ImGui::EndDisabled();
         }
-        
+
+        if (!m_isShapeGenerated)
+        {
+            ImGui::BeginDisabled();
+        }
 
         if (ImGui::Button("Generate Island"))
         {
             wfc.generateIsland();
             m_isIslandGenerated = true;
+        }
+
+        if (!m_isShapeGenerated)
+        {
+            ImGui::EndDisabled();
         }
 
         break;

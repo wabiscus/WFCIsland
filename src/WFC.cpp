@@ -137,7 +137,7 @@ void WFC::propagateUntilStable()
 
 void WFC::collapse()
 {
-    std::vector<Candidate> candidates;
+    std::vector<CellPosition> candidates;
     int lowestEntropy = INT_MAX;
 
     const Scope &scope = m_grid.getScope();
@@ -167,7 +167,7 @@ void WFC::collapse()
     }
 
     std::uniform_int_distribution<std::size_t> distribution(0, candidates.size() - 1);
-    Candidate selectedCandidate = candidates[distribution(m_generator)];
+    CellPosition selectedCandidate = candidates[distribution(m_generator)];
 
     Cell &cell = m_grid.get(selectedCandidate.x, selectedCandidate.y);
 
