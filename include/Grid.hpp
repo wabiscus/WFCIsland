@@ -64,6 +64,9 @@ public:
     void setScope(ScopeSize scope);
     const Scope &getScope() const;
 
+    void saveState();
+    void restoreState();
+
 private:
     int m_width;
     int m_height;
@@ -72,4 +75,7 @@ private:
     Scope m_scope = {0, 0, 72, 72};
     std::vector<Cell> m_cells;
     std::vector<CellPosition> m_unknownCells;
+    
+    std::vector<Cell> m_savedCells;
+    std::vector<CellPosition> m_savedUnknownCells;
 };

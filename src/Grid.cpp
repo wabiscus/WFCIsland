@@ -101,6 +101,18 @@ void Grid::removeUnknownCell(std::size_t index)
     m_unknownCells.pop_back();
 }
 
+void Grid::saveState()
+{
+    m_savedCells = m_cells;
+    m_savedUnknownCells = m_unknownCells;
+}
+
+void Grid::restoreState()
+{
+    m_cells = m_savedCells;
+    m_unknownCells = m_savedUnknownCells;
+}
+
 Cell::Cell() : tile(Tile::Unknown), possibilities(), entropy(0) {}
 
 Cell::Cell(Tile tile)

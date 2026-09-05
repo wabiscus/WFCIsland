@@ -26,9 +26,16 @@ public:
 
     void generateIsland();
 
+    void generateStep();
+
+    bool isGenerating() const;
+
+    void startGeneration();
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;
     std::mt19937 m_generator;
     bool m_contradiction = false;
+    bool m_generating = false;
 };

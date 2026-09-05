@@ -117,6 +117,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             shapegen.connectPoints();
             shapegen.fillOutsideWithWater();
             grid.updateUnknownCells();
+            grid.saveState();
             m_isShapeGenerated = true;
         }
 
@@ -154,6 +155,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             shapegen.connectPoints();
             shapegen.fillOutsideWithWater();
             grid.updateUnknownCells();
+            grid.saveState();
         }
 
         ImGui::Separator();
@@ -229,6 +231,22 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         if (ImGui::Button("Generate Island"))
         {
             wfc.generateIsland();
+            m_isIslandGenerated = true;
+        }
+
+        if (ImGui::Button("Generate"))
+        {
+            wfc.startGeneration();
+        }
+
+        if (ImGui::Button("Restore Island Shape"))
+        {
+            grid.restoreState();
+        }
+
+        if (wfc.isGenerating())
+        {
+            wfc.generateStep();
             m_isIslandGenerated = true;
         }
 

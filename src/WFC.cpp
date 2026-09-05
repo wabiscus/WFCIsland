@@ -192,32 +192,45 @@ bool WFC::hasContradiction() const
 
 void WFC::generateIsland()
 {
-    int collapseCount = 0;
-
     propagateUntilStable();
 
     while (m_grid.hasUnknownCells())
     {
-        std::cout << "Collapse: " << collapseCount << '\n';
-
         collapse();
 
         propagateUntilStable();
-
-        ++collapseCount;
 
         if (hasContradiction())
         {
             std::cout << "Contradiction!\n";
             return;
         }
+    }
+}
 
-        if (collapseCount > 10000)
-        {
-            std::cout << "Generation stopped: too many collapses.\n";
-            return;
-        }
+void WFC::generateStep()
+{
+    if (!m_grid.hasUnknownCells())
+    {
+        m_generating = false;
+        return;
     }
 
-    std::cout << "Generation finished.\n";
+    collapse();
+    propagateUntilStable();
+
+    if (hasContradiction())
+    {
+        m_generating = false;
+    }
+}
+
+bool WFC::isGenerating() const
+{
+    return m_generating;
+}
+
+void WFC::startGeneration()
+{
+    m_generating = true;
 }
