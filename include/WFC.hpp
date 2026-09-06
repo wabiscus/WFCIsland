@@ -4,6 +4,8 @@
 #include "Ruleset.hpp"
 
 #include <random>
+#include <queue>
+#include <utility>
 
 class WFC
 {
@@ -39,4 +41,5 @@ private:
     std::mt19937 m_generator;
     bool m_contradiction = false;
     bool m_generating = false;
+    std::queue<CellPosition> m_propagationQueue;
 };

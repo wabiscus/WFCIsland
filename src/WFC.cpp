@@ -64,65 +64,78 @@ void WFC::regenerateMap()
 
 bool WFC::propagateStep()
 {
+    if (m_propagationQueue.empty())
+    {
+        return false;
+    }
+
+    const CellPosition position = m_propagationQueue.front();
+    m_propagationQueue.pop();
+
+    Cell &current = m_grid.get(position.x, position.y);
+
+    if (current.tile != Tile::Unknown)
+    {
+        return false;
+    }
+
+    Cell &top = m_grid.get(position.x, position.y - 1);
+    Cell &right = m_grid.get(position.x + 1, position.y);
+    Cell &bottom = m_grid.get(position.x, position.y + 1);
+    Cell &left = m_grid.get(position.x - 1, position.y);
+
+    std::vector<const Cell *> neighbors =
+        {
+            &top,
+            &right,
+            &bottom,
+            &left};
+
     bool changed = false;
 
-    const Scope &scope = m_grid.getScope();
-
-    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    for (const Cell *neighbor : neighbors)
     {
-        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        std::set<Tile> allowedByNeighbor;
+
+        for (Tile neighborPossibility : neighbor->possibilities)
         {
-            Cell &current = m_grid.get(x, y);
-
-            if (current.tile != Tile::Unknown)
+            for (Tile allowed :
+                 m_ruleset.getAllowedNeighbors(neighborPossibility))
             {
-                continue;
-            }
-            if (x > scope.x &&
-                x < scope.x + scope.width - 1 &&
-                y > scope.y &&
-                y < scope.y + scope.height - 1)
-            {
-                Cell &top = m_grid.get(x, y - 1);
-                Cell &bottom = m_grid.get(x, y + 1);
-                Cell &left = m_grid.get(x - 1, y);
-                Cell &right = m_grid.get(x + 1, y);
-
-                std::vector<const Cell *> neighbors = {&top, &right, &bottom, &left};
-
-                for (const Cell *neighbor : neighbors)
-                {
-                    std::set<Tile> allowedByNeighbor;
-                    for (Tile neighborPossibility : neighbor->possibilities)
-                    {
-                        for (Tile allowed : m_ruleset.getAllowedNeighbors(neighborPossibility))
-                        {
-                            allowedByNeighbor.insert(allowed);
-                        }
-                    }
-                    for (auto it = current.possibilities.begin();
-                         it != current.possibilities.end();)
-                    {
-                        if (!allowedByNeighbor.contains(*it))
-                        {
-                            it = current.possibilities.erase(it);
-                            --current.entropy;
-                            changed = true;
-
-                            if (current.possibilities.empty())
-                            {
-                                current.tile = Tile::Contradiction;
-                                m_contradiction = true;
-                            }
-                        }
-                        else
-                        {
-                            ++it;
-                        }
-                    }
-                }
+                allowedByNeighbor.insert(allowed);
             }
         }
+
+        for (auto it = current.possibilities.begin();
+             it != current.possibilities.end();)
+        {
+            if (!allowedByNeighbor.contains(*it))
+            {
+                it = current.possibilities.erase(it);
+                --current.entropy;
+
+                changed = true;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        if (current.possibilities.empty())
+        {
+            current.tile = Tile::Contradiction;
+            m_contradiction = true;
+            return true;
+        }
+    }
+
+    if (changed)
+    {
+        m_propagationQueue.push({position.x, position.y - 1});
+        m_propagationQueue.push({position.x + 1, position.y});
+        m_propagationQueue.push({position.x, position.y + 1});
+        m_propagationQueue.push({position.x - 1, position.y});
     }
 
     return changed;
@@ -130,8 +143,9 @@ bool WFC::propagateStep()
 
 void WFC::propagateUntilStable()
 {
-    while (propagateStep())
+    while (!m_propagationQueue.empty())
     {
+        propagateStep();
     }
 }
 
@@ -189,7 +203,7 @@ void WFC::collapse()
             possibilities[distribution(m_generator)];
 
         m_grid.set(position.x, position.y, Cell(selectedTile));
-
+        m_propagationQueue.push(position);
         m_grid.removeUnknownCell(selectedIndex);
     }
 }

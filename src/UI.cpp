@@ -204,12 +204,17 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             }
         }
 
+        ImGui::Text("Boundary Possible Tiles :");
+        for (Tile tileNeighbor : ruleset.getAllowedNeighbors(Tile::Water))
+        {
+            drawTileLabel(tileNeighbor);
+        }
+
         if (ImGui::Button("Define Boundary"))
         {
             shapegen.defineBoundary();
             grid.saveState();
         }
-        
 
         ImGui::Separator();
 
