@@ -170,19 +170,28 @@ void WFC::collapse()
 
     const std::vector<Tile> &possibilities = cell.possibilities;
 
-    const std::vector<int> &weights =
-        m_ruleset.getWeights(possibilities);
+    if (cell.entropy == 1)
+    {
+        m_grid.set(position.x, position.y, Cell(cell.possibilities[0]));
 
-    std::discrete_distribution<std::size_t> distribution(
-        weights.begin(),
-        weights.end());
+        m_grid.removeUnknownCell(selectedIndex);
+    }
+    else
+    {
+        const std::vector<int> &weights =
+            m_ruleset.getWeights(possibilities);
 
-    const Tile selectedTile =
-        possibilities[distribution(m_generator)];
+        std::discrete_distribution<std::size_t> distribution(
+            weights.begin(),
+            weights.end());
 
-    m_grid.set(position.x, position.y, Cell(selectedTile));
+        const Tile selectedTile =
+            possibilities[distribution(m_generator)];
 
-    m_grid.removeUnknownCell(selectedIndex);
+        m_grid.set(position.x, position.y, Cell(selectedTile));
+
+        m_grid.removeUnknownCell(selectedIndex);
+    }
 }
 
 bool WFC::hasContradiction() const
