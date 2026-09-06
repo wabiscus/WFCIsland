@@ -5,6 +5,7 @@
 enum class Tile
 {
     Unknown,
+    Boundary,
     Water,
     Sand,
     Grass,
@@ -75,7 +76,7 @@ private:
     Scope m_scope = {0, 0, 72, 72};
     std::vector<Cell> m_cells;
     std::vector<CellPosition> m_unknownCells;
-    
+
     std::vector<Cell> m_savedCells;
     std::vector<CellPosition> m_savedUnknownCells;
 };

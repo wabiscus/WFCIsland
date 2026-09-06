@@ -7,7 +7,7 @@
 #include <iostream>
 #include <utility>
 
-ShapeGenerator::ShapeGenerator(Grid &grid) : m_grid(grid)
+ShapeGenerator::ShapeGenerator(Grid &grid, Ruleset &ruleset) : m_grid(grid), m_ruleset(ruleset)
 {
 }
 
@@ -66,7 +66,7 @@ void ShapeGenerator::generate(int influencePointCount, float sharpness, float ro
                       << point.x << ", "
                       << point.y << '\n';
         }
-        m_grid.set(point.x, point.y, Tile::Sand);
+        m_grid.set(point.x, point.y, Tile::Boundary);
     }
 }
 
@@ -79,7 +79,6 @@ void ShapeGenerator::connectPoints()
 {
     for (int i = 0; i < m_points.size(); i++)
     {
-
         int next = (i + 1) % m_points.size();
         InfluencePoint point0 = m_points[i];
         InfluencePoint point1 = m_points[next];
@@ -96,7 +95,7 @@ void ShapeGenerator::connectPoints()
         int err = dx - dy;
         while (true)
         { // Ajouter le point courant
-            m_grid.set(x0, y0, Tile::Sand);
+            m_grid.set(x0, y0, Tile::Boundary);
             // Arrivée au point final
             if (x0 == x1 && y0 == y1)
                 break;
@@ -110,6 +109,40 @@ void ShapeGenerator::connectPoints()
             {
                 err += dx;
                 y0 += sy;
+            }
+        }
+    }
+}
+
+void ShapeGenerator::defineBoundary()
+{
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    const std::vector<Tile> &waterNeighbors =
+        m_ruleset.getAllowedNeighbors(Tile::Water);
+
+    const std::vector<int> &weights =
+        m_ruleset.getWeights(waterNeighbors);
+
+    std::discrete_distribution<std::size_t> distribution(
+        weights.begin(),
+        weights.end());
+
+    const Scope &scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            const Cell &cell = m_grid.get(x, y);
+
+            if (cell.tile == Tile::Boundary)
+            {
+                const Tile selectedTile =
+                    waterNeighbors[distribution(generator)];
+
+                m_grid.set(x, y, Cell(selectedTile));
             }
         }
     }

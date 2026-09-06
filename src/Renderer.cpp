@@ -43,6 +43,10 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
             case Tile::Contradiction:
                 SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
                 break;
+
+            case Tile::Boundary:
+                SDL_SetRenderDrawColor(m_renderer, 80, 127, 128, 255);
+                break;
             }
 
             SDL_RenderFillRect(m_renderer, &rect);

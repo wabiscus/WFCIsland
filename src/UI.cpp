@@ -204,6 +204,13 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             }
         }
 
+        if (ImGui::Button("Define Boundary"))
+        {
+            shapegen.defineBoundary();
+            grid.saveState();
+        }
+        
+
         ImGui::Separator();
 
         if (m_isIslandGenerated)

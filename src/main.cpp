@@ -38,7 +38,7 @@ int main()
 
     UI UILeft(UIPanel::Left);
     UI UIRight(UIPanel::Right);
-    ShapeGenerator shapegen(grid);
+    ShapeGenerator shapegen(grid, ruleset);
 
     if (!window)
     {
