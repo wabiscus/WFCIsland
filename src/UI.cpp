@@ -338,7 +338,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                                 ImGui::SliderInt(
                                     tileToString(possibilities[i]),
                                     &editableWeights[i],
-                                    1,
+                                    0,
                                     10);
                             }
 
