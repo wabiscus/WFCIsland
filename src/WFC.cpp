@@ -187,8 +187,6 @@ void WFC::collapse()
     if (cell.entropy == 1)
     {
         m_grid.set(position.x, position.y, Cell(cell.possibilities[0]));
-
-        m_grid.removeUnknownCell(selectedIndex);
     }
     else
     {
@@ -203,9 +201,14 @@ void WFC::collapse()
             possibilities[distribution(m_generator)];
 
         m_grid.set(position.x, position.y, Cell(selectedTile));
-        m_propagationQueue.push(position);
-        m_grid.removeUnknownCell(selectedIndex);
     }
+
+    m_propagationQueue.push({position.x, position.y - 1});
+    m_propagationQueue.push({position.x + 1, position.y});
+    m_propagationQueue.push({position.x, position.y + 1});
+    m_propagationQueue.push({position.x - 1, position.y});
+
+    m_grid.removeUnknownCell(selectedIndex);
 }
 
 bool WFC::hasContradiction() const
