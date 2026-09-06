@@ -113,6 +113,18 @@ void Grid::restoreState()
     m_unknownCells = m_savedUnknownCells;
 }
 
+void Grid::saveShape()
+{
+    m_savedShape = m_cells;
+    m_savedUnknownCellsShape = m_unknownCells;
+}
+
+void Grid::restoreShape()
+{
+    m_cells = m_savedShape;
+    m_unknownCells = m_savedUnknownCellsShape;
+}
+
 Cell::Cell() : tile(Tile::Unknown), possibilities(), entropy(0) {}
 
 Cell::Cell(Tile tile)

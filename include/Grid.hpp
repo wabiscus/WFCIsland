@@ -68,6 +68,9 @@ public:
     void saveState();
     void restoreState();
 
+    void saveShape();
+    void restoreShape();
+
 private:
     int m_width;
     int m_height;
@@ -79,4 +82,7 @@ private:
 
     std::vector<Cell> m_savedCells;
     std::vector<CellPosition> m_savedUnknownCells;
+
+    std::vector<Cell> m_savedShape;
+    std::vector<CellPosition> m_savedUnknownCellsShape;
 };

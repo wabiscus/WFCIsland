@@ -118,7 +118,9 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             shapegen.fillOutsideWithWater();
             grid.updateUnknownCells();
             grid.saveState();
+            grid.saveShape();
             m_isShapeGenerated = true;
+            m_isBoundaryDefined = true;
         }
 
         ImGui::Separator();
@@ -146,6 +148,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             m_scopeSize = static_cast<ScopeSize>(currentScope);
             m_isIslandGenerated = false;
             m_isShapeGenerated = true;
+            m_isBoundaryDefined = true;
             grid.setScope(m_scopeSize);
             wfc.regenerateMap();
             shapegen.generate(
@@ -156,6 +159,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             shapegen.fillOutsideWithWater();
             grid.updateUnknownCells();
             grid.saveState();
+            grid.saveShape();
         }
 
         ImGui::Separator();
@@ -210,11 +214,24 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             drawTileLabel(tileNeighbor);
         }
 
-        if (ImGui::Button("Define Boundary"))
+        if (!m_isBoundaryDefined)
         {
+            ImGui::BeginDisabled();
+        }
+        
+        if (ImGui::Button(m_isBoundaryNotSet ? "Define Boundary" : "Refine Boundary"))
+        {
+            grid.restoreShape();
             shapegen.defineBoundary();
             grid.saveState();
+            m_isBoundaryNotSet = false;
         }
+
+        if (!m_isBoundaryDefined)
+        {
+            ImGui::EndDisabled();
+        }
+        
 
         ImGui::Separator();
 
@@ -223,12 +240,9 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             ImGui::BeginDisabled();
         }
 
-        if (ImGui::Button("Propagate Until Stable"))
+        if (ImGui::Button("Generate One Step"))
         {
             wfc.propagateUntilStable();
-        }
-        if (ImGui::Button("Collapse Step"))
-        {
             wfc.collapse();
         }
 
@@ -379,4 +393,8 @@ bool UI::isGridVisible() const
 bool UI::arePossibilitiesVisible() const
 {
     return m_showPossibilities;
+}
+
+bool UI::isBoundaryDefined() const{
+    return m_isBoundaryDefined;
 }
