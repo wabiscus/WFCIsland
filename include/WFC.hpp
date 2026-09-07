@@ -37,6 +37,8 @@ public:
 
     void setRuleset(RulesetType newRulset);
 
+    void resetPossibilities();
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;

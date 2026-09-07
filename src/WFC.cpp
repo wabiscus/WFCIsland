@@ -270,3 +270,23 @@ void WFC::setRuleset(RulesetType type)
 {
     m_ruleset.setType(type);
 }
+
+void WFC::resetPossibilities()
+{
+    const Scope& scope = m_grid.getScope();
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            Cell& cell = m_grid.get(x, y);
+
+            if (cell.tile == Tile::Unknown)
+            {
+                cell.possibilities = m_ruleset.getTiles();
+                cell.entropy =
+                    static_cast<int>(cell.possibilities.size());
+            }
+        }
+    }
+}

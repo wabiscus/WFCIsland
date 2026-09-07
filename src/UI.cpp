@@ -253,6 +253,8 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             grid.restoreShape();
             shapegen.defineBoundary();
+            shapegen.fillOutsideWithWater();
+            wfc.resetPossibilities();
             grid.saveState();
             m_isBoundaryNotSet = false;
         }
@@ -334,7 +336,11 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                         selected))
                 {
                     currentRuleset = type;
-                    ruleset.setType(type);
+                    wfc.setRuleset(type);
+                    grid.restoreShape();
+                    shapegen.fillOutsideWithWater();
+                    wfc.resetPossibilities();
+                    grid.saveState();
 
                     // Régénération ici
                 }

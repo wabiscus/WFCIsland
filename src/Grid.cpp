@@ -115,14 +115,30 @@ void Grid::restoreState()
 
 void Grid::saveShape()
 {
-    m_savedShape = m_cells;
-    m_savedUnknownCellsShape = m_unknownCells;
+    m_savedBoundary.clear();
+
+    const Scope &scope = m_scope;
+
+    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    {
+        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        {
+            if (get(x, y).tile == Tile::Boundary)
+            {
+                m_savedBoundary.push_back({x, y});
+            }
+        }
+    }
 }
 
 void Grid::restoreShape()
 {
-    m_cells = m_savedShape;
-    m_unknownCells = m_savedUnknownCellsShape;
+    fill(Cell(Tile::Unknown));
+
+    for (CellPosition cell : m_savedBoundary)
+    {
+        set(cell.x, cell.y, Cell(Tile::Boundary));
+    }
 }
 
 Cell::Cell() : tile(Tile::Unknown), possibilities(), entropy(0) {}
