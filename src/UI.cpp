@@ -68,6 +68,36 @@ ImU32 tileToColor(Tile tile)
     }
 }
 
+const char *rulesetToString(RulesetType type)
+{
+    switch (type)
+    {
+    case RulesetType::Tropical:
+        return "Tropical";
+
+    case RulesetType::Desert:
+        return "Desert";
+
+    case RulesetType::Forest:
+        return "Forest";
+
+    case RulesetType::Volcanic:
+        return "Volcanic";
+
+    case RulesetType::Count:
+        return "Count";
+    }
+
+    return "Unknown";
+}
+
+const char *rulesetItems[] =
+    {
+        rulesetToString(RulesetType::Tropical),
+        rulesetToString(RulesetType::Desert),
+        rulesetToString(RulesetType::Forest),
+        rulesetToString(RulesetType::Volcanic)};
+
 void drawTileLabel(Tile tile)
 {
     ImGui::Text("%s", tileToString(tile));
@@ -218,7 +248,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             ImGui::BeginDisabled();
         }
-        
+
         if (ImGui::Button(m_isBoundaryNotSet ? "Define Boundary" : "Refine Boundary"))
         {
             grid.restoreShape();
@@ -231,7 +261,6 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             ImGui::EndDisabled();
         }
-        
 
         ImGui::Separator();
 
@@ -286,6 +315,37 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         if (!m_isShapeGenerated)
         {
             ImGui::EndDisabled();
+        }
+
+        RulesetType currentRuleset = ruleset.getType();
+
+        if (ImGui::BeginCombo(
+                "Ruleset",
+                rulesetToString(currentRuleset)))
+        {
+            for (int i = 0; i < static_cast<int>(RulesetType::Count); ++i)
+            {
+                RulesetType type = static_cast<RulesetType>(i);
+
+                bool selected = (type == currentRuleset);
+
+                if (ImGui::Selectable(
+                        rulesetToString(type),
+                        selected))
+                {
+                    currentRuleset = type;
+                    ruleset.setType(type);
+
+                    // Régénération ici
+                }
+
+                if (selected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::EndCombo();
         }
 
         break;
@@ -395,6 +455,7 @@ bool UI::arePossibilitiesVisible() const
     return m_showPossibilities;
 }
 
-bool UI::isBoundaryDefined() const{
+bool UI::isBoundaryDefined() const
+{
     return m_isBoundaryDefined;
 }

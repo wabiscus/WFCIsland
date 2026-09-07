@@ -37,7 +37,20 @@ void Ruleset::loadRuleset(RulesetType type)
         m_weights[{Tile::Water, Tile::Sand}] = {5, 6};
         break;
 
-    case RulesetType::Volcanic:
+    case RulesetType::Forest:
+        m_name = "Forest";
+        m_tiles = {
+            Tile::Water,
+            Tile::Sand,
+            Tile::Grass,
+            // Tile::Forest
+        };
+        m_weights[{Tile::Water, Tile::Sand}] = {8, 2};
+        m_weights[{Tile::Water, Tile::Sand, Tile::Grass}] = {1, 4, 5};
+        m_weights[{Tile::Sand, Tile::Grass}] = {4, 6};
+        break;
+
+        case RulesetType::Volcanic:
         m_name = "Volcanic";
         m_tiles = {
             Tile::Water,
@@ -96,7 +109,8 @@ void Ruleset::setWeights(
     m_weights[tile] = weights;
 }
 
-const RulesetType Ruleset::getType() const {
+const RulesetType Ruleset::getType() const
+{
     return m_type;
 }
 

@@ -8,7 +8,9 @@ enum class RulesetType
     Tropical,
     Desert,
     Forest,
-    Volcanic
+    Volcanic,
+
+    Count
 };
 
 class Ruleset
@@ -30,9 +32,11 @@ public:
         const std::vector<int> &weights);
     void setType(RulesetType newType);
 
+    static const std::vector<RulesetType>& getAllTypes();
+
 private:
     void loadRuleset(RulesetType type);
-    
+
     RulesetType m_type;
     std::string m_name;
     std::vector<Tile> m_tiles;
