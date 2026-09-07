@@ -1,8 +1,17 @@
 #include "Ruleset.hpp"
 
 Ruleset::Ruleset(RulesetType type)
-    : m_type(type)
 {
+    loadRuleset(type);
+}
+
+void Ruleset::loadRuleset(RulesetType type)
+{
+    m_type = type;
+
+    m_tiles.clear();
+    m_weights.clear();
+
     switch (type)
     {
     case RulesetType::Tropical:
@@ -85,4 +94,13 @@ void Ruleset::setWeights(
     const std::vector<int> &weights)
 {
     m_weights[tile] = weights;
+}
+
+const RulesetType Ruleset::getType() const {
+    return m_type;
+}
+
+void Ruleset::setType(RulesetType newType)
+{
+    loadRuleset(newType);
 }

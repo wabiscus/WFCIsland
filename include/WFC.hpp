@@ -35,6 +35,8 @@ public:
     void startGeneration();
     void toggleGeneration();
 
+    void setRuleset(RulesetType newRulset);
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;

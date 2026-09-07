@@ -17,17 +17,22 @@ public:
     Ruleset(RulesetType type);
 
     const std::string &getName() const;
+    const RulesetType getType() const;
+
     const std::vector<Tile> &getTiles() const;
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
+
     const std::map<std::vector<Tile>, std::vector<int>> &getWeights() const;
     std::vector<int> &getWeights(const std::vector<Tile> &possibilities);
+    
     void setWeights(
         const std::vector<Tile> &tile,
         const std::vector<int> &weights);
-
-    void setType(RulesetType newRulset);
+    void setType(RulesetType newType);
 
 private:
+    void loadRuleset(RulesetType type);
+    
     RulesetType m_type;
     std::string m_name;
     std::vector<Tile> m_tiles;

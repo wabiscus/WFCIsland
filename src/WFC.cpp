@@ -265,3 +265,8 @@ void WFC::toggleGeneration()
 {
     m_generating = !m_generating;
 }
+
+void WFC::setRuleset(RulesetType type)
+{
+    m_ruleset.setType(type);
+}
