@@ -6,6 +6,44 @@
 WFC::WFC(Grid &grid, Ruleset &ruleset)
     : m_grid(grid), m_ruleset(ruleset), m_generator(std::random_device{}())
 {
+    m_fsm.addTransition(
+        GenerationState::Empty,
+        GenerationState::Shape);
+
+    m_fsm.addTransition(
+        GenerationState::Shape,
+        GenerationState::Shape
+    );
+
+    m_fsm.addTransition(
+        GenerationState::Shape,
+        GenerationState::BoundariesDefined);
+
+    m_fsm.addTransition(
+        GenerationState::BoundariesDefined,
+        GenerationState::BoundariesDefined
+    );
+
+    m_fsm.addTransition(
+        GenerationState::BoundariesDefined,
+        GenerationState::Shape
+    );
+
+    m_fsm.addTransition(
+        GenerationState::BoundariesDefined,
+        GenerationState::Generating);
+
+    m_fsm.addTransition(
+        GenerationState::Generating,
+        GenerationState::Generated);
+
+    m_fsm.addTransition(
+        GenerationState::Generated,
+        GenerationState::Shape);
+
+    m_fsm.addTransition(
+        GenerationState::Generated,
+        GenerationState::BoundariesDefined);
 }
 
 void WFC::initialize()
@@ -273,13 +311,13 @@ void WFC::setRuleset(RulesetType type)
 
 void WFC::resetPossibilities()
 {
-    const Scope& scope = m_grid.getScope();
+    const Scope &scope = m_grid.getScope();
 
     for (int y = scope.y; y < scope.y + scope.height; ++y)
     {
         for (int x = scope.x; x < scope.x + scope.width; ++x)
         {
-            Cell& cell = m_grid.get(x, y);
+            Cell &cell = m_grid.get(x, y);
 
             if (cell.tile == Tile::Unknown)
             {

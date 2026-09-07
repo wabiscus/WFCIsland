@@ -6,15 +6,6 @@
 #include <utility>
 #include <vector>
 
-enum class GenerationState
-{
-    Empty,
-    Shape,
-    BoundariesDefined,
-    Generating,
-    Generated
-};
-
 template <typename State>
 class FSM
 {

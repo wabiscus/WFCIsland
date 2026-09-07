@@ -2,10 +2,20 @@
 
 #include "Grid.hpp"
 #include "Ruleset.hpp"
+#include "FSM.hpp"
 
 #include <random>
 #include <queue>
 #include <utility>
+
+enum class GenerationState
+{
+    Empty,
+    Shape,
+    BoundariesDefined,
+    Generating,
+    Generated
+};
 
 class WFC
 {
@@ -39,6 +49,8 @@ public:
 
     void resetPossibilities();
 
+    GenerationState getState() const;
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;
@@ -46,4 +58,6 @@ private:
     bool m_contradiction = false;
     bool m_generating = false;
     std::queue<CellPosition> m_propagationQueue;
+
+    FSM<GenerationState> m_fsm{GenerationState::Empty};
 };
