@@ -10,45 +10,6 @@ WFC::WFC(
       m_ruleset(ruleset),
       m_generator(std::random_device{}())
 {
-    m_fsm.addTransition(
-        GenerationState::Empty,
-        GenerationEvent::GenerateShape,
-        GenerationState::Shape);
-
-    m_fsm.addTransition(
-        GenerationState::Shape,
-        GenerationEvent::GenerateShape,
-        GenerationState::Shape);
-
-    m_fsm.addTransition(
-        GenerationState::Shape,
-        GenerationEvent::DefineBoundary,
-        GenerationState::BoundariesDefined);
-
-    m_fsm.addTransition(
-        GenerationState::BoundariesDefined,
-        GenerationEvent::DefineBoundary,
-        GenerationState::BoundariesDefined);
-
-    m_fsm.addTransition(
-        GenerationState::BoundariesDefined,
-        GenerationEvent::GenerateShape,
-        GenerationState::Shape);
-
-    m_fsm.addTransition(
-        GenerationState::BoundariesDefined,
-        GenerationEvent::Generate,
-        GenerationState::Generating);
-
-    m_fsm.addTransition(
-        GenerationState::Generated,
-        GenerationEvent::RestoreShape,
-        GenerationState::Shape);
-
-    m_fsm.addTransition(
-        GenerationState::Generated,
-        GenerationEvent::RestoreBoundaries,
-        GenerationState::BoundariesDefined);
 }
 
 void WFC::initialize()
@@ -282,7 +243,6 @@ void WFC::generateStep()
     if (!m_grid.hasUnknownCells())
     {
         m_generating = false;
-        m_fsm.transitionTo(GenerationState::Generated);
         return;
     }
 
@@ -294,10 +254,10 @@ void WFC::generateStep()
         m_generating = false;
     }
 
-    if (!m_grid.hasUnknownCells())
-    {
-        m_fsm.transitionTo(GenerationState::Generated);
-    }
+    // if (!m_grid.hasUnknownCells())
+    // {
+    //     m_fsm.transitionTo(GenerationState::Generated);
+    // }
 }
 
 bool WFC::isGenerating() const
@@ -338,4 +298,16 @@ void WFC::resetPossibilities()
             }
         }
     }
+}
+
+// void WFC::startGeneration()
+// {
+//     m_contradiction = false;
+//     m_propagationQueue = {};
+//     // éventuelle initialisation de la propagation
+// }
+
+bool WFC::isFinished() const
+{
+    return !m_grid.hasUnknownCells();
 }

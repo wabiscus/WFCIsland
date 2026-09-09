@@ -8,24 +8,6 @@
 #include <queue>
 #include <utility>
 
-enum class GenerationState
-{
-    Empty,
-    Shape,
-    BoundariesDefined,
-    Generating,
-    Generated
-};
-
-enum class GenerationEvent
-{
-    GenerateShape,
-    DefineBoundary,
-    Generate,
-    RestoreShape,
-    RestoreBoundaries
-};
-
 class WFC
 {
 public:
@@ -58,7 +40,7 @@ public:
 
     void resetPossibilities();
 
-    GenerationState getState() const;
+    bool isFinished() const;
 
 private:
     Grid &m_grid;
@@ -67,6 +49,4 @@ private:
     bool m_contradiction = false;
     bool m_generating = false;
     std::queue<CellPosition> m_propagationQueue;
-
-    FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
 };

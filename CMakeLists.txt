@@ -25,6 +25,7 @@ add_executable(
     src/UI.cpp
     src/ShapeGenerator.cpp
     src/Ruleset.cpp
+    src/App.cpp
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
