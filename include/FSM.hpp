@@ -1,21 +1,21 @@
 #pragma once
 
 #include <functional>
-#include <stdexcept>
-#include <unordered_map>
-#include <utility>
 #include <vector>
+#include <unordered_map>
+#include <stdexcept>
+#include <utility>
 
-template <typename State>
+template <typename State, typename Event>
 class FSM
 {
 public:
-    using StateType = State;
     using Callback = std::function<void()>;
 
     struct Transition
     {
         State from;
+        Event event;
         State to;
     };
 
@@ -35,12 +35,15 @@ public:
         return m_currentState == state;
     }
 
-    void addTransition(State from, State to)
+    void addTransition(
+        State from,
+        Event event,
+        State to)
     {
-        m_transitions[from].push_back(to);
+        m_transitions[from].push_back({from, event, to});
     }
 
-    bool canTransitionTo(State state) const
+    bool canHandle(Event event) const
     {
         auto it = m_transitions.find(m_currentState);
 
@@ -49,9 +52,9 @@ public:
             return false;
         }
 
-        for (State target : it->second)
+        for (const Transition& transition : it->second)
         {
-            if (target == state)
+            if (transition.event == event)
             {
                 return true;
             }
@@ -60,49 +63,81 @@ public:
         return false;
     }
 
-    bool transitionTo(State state)
+    bool handleEvent(Event event)
     {
-        if (!canTransitionTo(state))
+        auto it = m_transitions.find(m_currentState);
+
+        if (it == m_transitions.end())
         {
             return false;
         }
 
-        State previousState = m_currentState;
-
-        auto callbackIt = m_exitCallbacks.find(previousState);
-
-        if (callbackIt != m_exitCallbacks.end())
+        for (const Transition& transition : it->second)
         {
-            callbackIt->second();
+            if (transition.event == event)
+            {
+                transitionTo(transition.to);
+                return true;
+            }
         }
 
-        m_currentState = state;
+        return false;
+    }
 
-        callbackIt = m_enterCallbacks.find(m_currentState);
-
-        if (callbackIt != m_enterCallbacks.end())
+    void transitionTo(State newState)
+    {
+        if (newState == m_currentState)
         {
-            callbackIt->second();
+            return;
         }
 
-        return true;
+        const State previousState = m_currentState;
+
+        auto exitIt = m_onExit.find(previousState);
+
+        if (exitIt != m_onExit.end())
+        {
+            exitIt->second();
+        }
+
+        m_currentState = newState;
+
+        auto enterIt = m_onEnter.find(m_currentState);
+
+        if (enterIt != m_onEnter.end())
+        {
+            enterIt->second();
+        }
     }
 
-    void onEnter(State state, Callback callback)
+    void onEnter(
+        State state,
+        Callback callback)
     {
-        m_enterCallbacks[state] = std::move(callback);
+        m_onEnter[state] = std::move(callback);
     }
 
-    void onExit(State state, Callback callback)
+    void onExit(
+        State state,
+        Callback callback)
     {
-        m_exitCallbacks[state] = std::move(callback);
+        m_onExit[state] = std::move(callback);
+    }
+
+    const std::unordered_map<State, std::vector<Transition>>&
+    getTransitions() const
+    {
+        return m_transitions;
     }
 
 private:
     State m_currentState;
 
-    std::unordered_map<State, std::vector<State>> m_transitions;
+    std::unordered_map<
+        State,
+        std::vector<Transition>>
+        m_transitions;
 
-    std::unordered_map<State, Callback> m_enterCallbacks;
-    std::unordered_map<State, Callback> m_exitCallbacks;
+    std::unordered_map<State, Callback> m_onEnter;
+    std::unordered_map<State, Callback> m_onExit;
 };

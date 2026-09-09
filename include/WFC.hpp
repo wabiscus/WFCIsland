@@ -17,6 +17,15 @@ enum class GenerationState
     Generated
 };
 
+enum class GenerationEvent
+{
+    GenerateShape,
+    DefineBoundary,
+    Generate,
+    RestoreShape,
+    RestoreBoundaries
+};
+
 class WFC
 {
 public:
@@ -59,5 +68,5 @@ private:
     bool m_generating = false;
     std::queue<CellPosition> m_propagationQueue;
 
-    FSM<GenerationState> m_fsm{GenerationState::Empty};
+    FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
 };

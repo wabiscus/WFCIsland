@@ -3,46 +3,51 @@
 #include <set>
 #include <iostream>
 
-WFC::WFC(Grid &grid, Ruleset &ruleset)
-    : m_grid(grid), m_ruleset(ruleset), m_generator(std::random_device{}())
+WFC::WFC(
+    Grid &grid,
+    Ruleset &ruleset)
+    : m_grid(grid),
+      m_ruleset(ruleset),
+      m_generator(std::random_device{}())
 {
     m_fsm.addTransition(
         GenerationState::Empty,
+        GenerationEvent::GenerateShape,
         GenerationState::Shape);
 
     m_fsm.addTransition(
         GenerationState::Shape,
-        GenerationState::Shape
-    );
+        GenerationEvent::GenerateShape,
+        GenerationState::Shape);
 
     m_fsm.addTransition(
         GenerationState::Shape,
+        GenerationEvent::DefineBoundary,
         GenerationState::BoundariesDefined);
 
     m_fsm.addTransition(
         GenerationState::BoundariesDefined,
-        GenerationState::BoundariesDefined
-    );
+        GenerationEvent::DefineBoundary,
+        GenerationState::BoundariesDefined);
 
     m_fsm.addTransition(
         GenerationState::BoundariesDefined,
-        GenerationState::Shape
-    );
+        GenerationEvent::GenerateShape,
+        GenerationState::Shape);
 
     m_fsm.addTransition(
         GenerationState::BoundariesDefined,
+        GenerationEvent::Generate,
         GenerationState::Generating);
 
     m_fsm.addTransition(
-        GenerationState::Generating,
-        GenerationState::Generated);
-
-    m_fsm.addTransition(
         GenerationState::Generated,
+        GenerationEvent::RestoreShape,
         GenerationState::Shape);
 
     m_fsm.addTransition(
         GenerationState::Generated,
+        GenerationEvent::RestoreBoundaries,
         GenerationState::BoundariesDefined);
 }
 
@@ -277,6 +282,7 @@ void WFC::generateStep()
     if (!m_grid.hasUnknownCells())
     {
         m_generating = false;
+        m_fsm.transitionTo(GenerationState::Generated);
         return;
     }
 
@@ -286,6 +292,11 @@ void WFC::generateStep()
     if (hasContradiction())
     {
         m_generating = false;
+    }
+
+    if (!m_grid.hasUnknownCells())
+    {
+        m_fsm.transitionTo(GenerationState::Generated);
     }
 }
 
