@@ -86,10 +86,10 @@ public:
 
     void transitionTo(State newState)
     {
-        if (newState == m_currentState)
-        {
-            return;
-        }
+        // if (newState == m_currentState)
+        // {
+        //     return;
+        // }
 
         const State previousState = m_currentState;
 

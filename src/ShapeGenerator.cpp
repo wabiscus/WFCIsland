@@ -184,11 +184,11 @@ bool ShapeGenerator::isInside(int x, int y) const
 
 void ShapeGenerator::fillOutsideWithWater()
 {
-    const Scope &scope = m_grid.getScope();
+    // const Scope &scope = m_grid.getScope();
 
-    for (int y = scope.y; y < scope.y + scope.height; ++y)
+    for (int y = 0; y < m_grid.getHeight(); ++y)
     {
-        for (int x = scope.x; x < scope.x + scope.width; ++x)
+        for (int x = 0; x < m_grid.getWidth(); ++x)
         {
             Cell &cell = m_grid.get(x, y);
 

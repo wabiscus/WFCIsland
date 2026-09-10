@@ -110,10 +110,11 @@ void App::setupFSM()
         GenerationState::BoundariesDefined,
         [this]()
         {
+            m_grid.restoreShape();
             m_shapeGenerator.fillOutsideWithWater();
             m_shapeGenerator.defineBoundary();
-
             m_wfc.resetPossibilities();
+            m_grid.saveState();
         });
 
     // ---------------------------------------------------------

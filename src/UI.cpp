@@ -196,13 +196,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             m_isBoundaryDefined = true;
 
             app.setScopeSize(static_cast<ScopeSize>(currentScope));
-            wfc.regenerateMap();
-
-            shapegen.fillOutsideWithWater();
-            grid.updateUnknownCells();
-            grid.saveState();
-            grid.saveShape();
-            app.handleEvent(GenerationEvent::RestoreShape);
+            app.handleEvent(GenerationEvent::GenerateShape);
         }
 
         ImGui::Separator();
@@ -264,13 +258,8 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
 
         if (ImGui::Button(m_isBoundaryNotSet ? "Define Boundary" : "Refine Boundary"))
         {
-            grid.restoreShape();
-            shapegen.defineBoundary();
-            shapegen.fillOutsideWithWater();
-            wfc.resetPossibilities();
-            grid.saveState();
-            m_isBoundaryNotSet = false;
             app.handleEvent(GenerationEvent::DefineBoundary);
+            m_isBoundaryNotSet = false;
         }
 
         if (!m_isBoundaryDefined)
