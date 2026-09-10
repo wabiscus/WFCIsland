@@ -64,6 +64,7 @@ public:
 
     void setScope(ScopeSize scope);
     const Scope &getScope() const;
+    const ScopeSize &getScopeSize() const;
 
     void saveState();
     void restoreState();

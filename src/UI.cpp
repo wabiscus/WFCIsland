@@ -165,16 +165,6 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             app.handleEvent(GenerationEvent::GenerateShape);
             m_isIslandGenerated = false;
-            wfc.regenerateMap();
-            shapegen.generate(
-                m_influencePointCount,
-                m_sharpness,
-                m_roundness);
-            shapegen.connectPoints();
-            shapegen.fillOutsideWithWater();
-            grid.updateUnknownCells();
-            grid.saveState();
-            grid.saveShape();
             m_isShapeGenerated = true;
             m_isBoundaryDefined = true;
         }
@@ -185,7 +175,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
 
         ImGui::Separator();
 
-        ImGui::SliderInt("Points", &m_influencePointCount, 3, 20);
+        ImGui::SliderInt("Points", &app.getInfluencePointsCount(), 3, 20);
         ImGui::Spacing();
 
         const char *scopeSizes[] = {
@@ -193,7 +183,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             "Medium",
             "Big"};
 
-        int currentScope = static_cast<int>(m_scopeSize);
+        int currentScope = static_cast<int>(app.getScopeSize());
 
         if (ImGui::Combo(
                 "Scope",
@@ -201,35 +191,32 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 scopeSizes,
                 IM_ARRAYSIZE(scopeSizes)))
         {
-            m_scopeSize = static_cast<ScopeSize>(currentScope);
             m_isIslandGenerated = false;
             m_isShapeGenerated = true;
             m_isBoundaryDefined = true;
-            grid.setScope(m_scopeSize);
+
+            app.setScopeSize(static_cast<ScopeSize>(currentScope));
             wfc.regenerateMap();
-            shapegen.generate(
-                m_influencePointCount,
-                m_sharpness,
-                m_roundness);
-            shapegen.connectPoints();
+
             shapegen.fillOutsideWithWater();
             grid.updateUnknownCells();
             grid.saveState();
             grid.saveShape();
+            app.handleEvent(GenerationEvent::RestoreShape);
         }
 
         ImGui::Separator();
 
         ImGui::SliderFloat(
             "Sharpness",
-            &m_sharpness,
+            &app.getSharpness(),
             0.0f,
             5.0f,
             "%.2f");
 
         ImGui::SliderFloat(
             "Roundness",
-            &m_roundness,
+            &app.getRoundness(),
             -1.0f,
             1.0f,
             "%.2f");

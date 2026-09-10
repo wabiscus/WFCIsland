@@ -35,14 +35,26 @@ public:
     void render();
     void renderUI();
 
+    int &getInfluencePointsCount();
+
+    const ScopeSize &getScopeSize() const;
+    void setScopeSize(ScopeSize scope);
+    
+    float &getSharpness();
+    float &getRoundness();
+
 private:
     void setupFSM();
 
 private:
-    Grid& m_grid;
-    Ruleset& m_ruleset;
-    ShapeGenerator& m_shapeGenerator;
-    WFC& m_wfc;
+    Grid &m_grid;
+    Ruleset &m_ruleset;
+    ShapeGenerator &m_shapeGenerator;
+    WFC &m_wfc;
 
     FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
+
+    int m_influencePointCount = 6;
+    float m_sharpness = 2.5f;
+    float m_roundness = 0.0f;
 };

@@ -56,6 +56,10 @@ const Scope &Grid::getScope() const
     return m_scope;
 }
 
+const ScopeSize &Grid::getScopeSize() const{
+    return m_scopeSize;
+}
+
 void Grid::fill(const Cell &cell)
 {
     for (int y = 0; y < m_height; ++y)

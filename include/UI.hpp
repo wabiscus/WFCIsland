@@ -24,10 +24,7 @@ public:
 private:
     UIPanel m_panel = UIPanel::Left;
     bool m_showGrid = false;
-    int m_influencePointCount = 6;
-    ScopeSize m_scopeSize = ScopeSize::Big;
-    float m_sharpness = 2.5f;
-    float m_roundness = 0.0f;
+
 
     bool m_showPossibilities = false;
     bool m_isShapeGenerated = false;

@@ -88,13 +88,19 @@ void App::setupFSM()
     // Enter Shape
     // ---------------------------------------------------------
 
-    // m_fsm.onEnter(
-    //     GenerationState::Shape,
-    //     [this]()
-    //     {
-    //         m_shapeGenerator.generate();
-    //         m_shapeGenerator.connectPoints();
-    //     });
+    m_fsm.onEnter(
+        GenerationState::Shape,
+        [this]()
+        {
+            m_wfc.regenerateMap();
+            m_shapeGenerator.generate(m_influencePointCount, m_sharpness, m_roundness);
+            m_shapeGenerator.connectPoints();
+            m_shapeGenerator.fillOutsideWithWater();
+            m_grid.updateUnknownCells();
+            m_grid.saveState();
+            m_grid.saveShape();
+
+        });
 
     // ---------------------------------------------------------
     // Enter BoundariesDefined
@@ -165,4 +171,29 @@ void App::update()
 GenerationState App::getGenerationState() const
 {
     return m_fsm.getState();
+}
+
+int &App::getInfluencePointsCount()
+{
+    return m_influencePointCount;
+}
+
+const ScopeSize &App::getScopeSize() const
+{
+    return m_grid.getScopeSize();
+}
+
+void App::setScopeSize(ScopeSize scope)
+{
+    m_grid.setScope(scope);
+}
+
+float &App::getSharpness()
+{
+    return m_sharpness;
+}
+
+float &App::getRoundness()
+{
+    return m_roundness;
 }

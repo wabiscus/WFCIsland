@@ -24,7 +24,7 @@ public:
     void defineBoundary();
 
     void fillOutsideWithWater();
-    
+
 private:
     Grid &m_grid;
     std::vector<InfluencePoint> m_points;
