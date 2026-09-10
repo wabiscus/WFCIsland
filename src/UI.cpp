@@ -98,6 +98,29 @@ const char *rulesetItems[] =
         rulesetToString(RulesetType::Forest),
         rulesetToString(RulesetType::Volcanic)};
 
+const char *stateToString(GenerationState state)
+{
+    switch (state)
+    {
+    case GenerationState::Empty:
+        return "Empty";
+
+    case GenerationState::Shape:
+        return "Shape";
+
+    case GenerationState::BoundariesDefined:
+        return "Boundaries Defines";
+
+    case GenerationState::Generating:
+        return "Generating";
+
+    case GenerationState::Generated:
+        return "Generated";
+    }
+
+    return "Unknown";
+}
+
 void drawTileLabel(Tile tile)
 {
     ImGui::Text("%s", tileToString(tile));
@@ -116,7 +139,7 @@ void drawTileLabel(Tile tile)
     ImGui::Dummy(ImVec2(size, size));
 }
 
-void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset)
+void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
 {
     switch (m_panel)
     {
@@ -135,9 +158,12 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         ImGui::Text("Width: %d", grid.getWidth());
         ImGui::Text("Height: %d", grid.getHeight());
 
+        ImGui::Text("Current state: %s", stateToString(app.getGenerationState()));
+
         ImGui::Spacing();
         if (ImGui::Button("Generate Island Shape"))
         {
+            app.handleEvent(GenerationEvent::GenerateShape);
             m_isIslandGenerated = false;
             wfc.regenerateMap();
             shapegen.generate(
@@ -257,6 +283,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
             wfc.resetPossibilities();
             grid.saveState();
             m_isBoundaryNotSet = false;
+            app.handleEvent(GenerationEvent::DefineBoundary);
         }
 
         if (!m_isBoundaryDefined)
@@ -296,6 +323,7 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         if (ImGui::Button("Generate"))
         {
             wfc.startGeneration();
+            app.handleEvent(GenerationEvent::Generate);
         }
 
         if (ImGui::Button(wfc.isGenerating() ? "Pause" : "Play"))

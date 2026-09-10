@@ -3,6 +3,7 @@
 #include "Grid.hpp"
 #include "WFC.hpp"
 #include "ShapeGenerator.hpp"
+#include "App.hpp"
 
 enum class UIPanel
 {
@@ -14,7 +15,7 @@ class UI
 {
 public:
     explicit UI(UIPanel panel) : m_panel(panel) {};
-    void render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset);
+    void render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app);
 
     bool isGridVisible() const;
     bool arePossibilitiesVisible() const;

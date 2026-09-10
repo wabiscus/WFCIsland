@@ -9,6 +9,7 @@
 #include "UI.hpp"
 #include "WFC.hpp"
 #include "ShapeGenerator.hpp"
+#include "App.hpp"
 
 int main()
 {
@@ -39,6 +40,8 @@ int main()
     UI UILeft(UIPanel::Left);
     UI UIRight(UIPanel::Right);
     ShapeGenerator shapegen(grid, ruleset);
+
+    App app(grid, ruleset, shapegen, wfc);
 
     if (!window)
     {
@@ -95,8 +98,8 @@ int main()
         renderer.render(grid, 280, 0, UILeft.isGridVisible(), UILeft.arePossibilitiesVisible());
 
         // ImGui ici si nécessaire
-        UILeft.render(grid, wfc, shapegen, ruleset);
-        UIRight.render(grid, wfc, shapegen, ruleset);
+        UILeft.render(grid, wfc, shapegen, ruleset, app);
+        UIRight.render(grid, wfc, shapegen, ruleset, app);
         // --------------------------------------------------
         // Rendu
         // --------------------------------------------------
