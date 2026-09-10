@@ -155,8 +155,8 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                 ImGuiWindowFlags_NoResize |
                 ImGuiWindowFlags_NoCollapse);
 
-        ImGui::Text("Width: %d", grid.getWidth());
-        ImGui::Text("Height: %d", grid.getHeight());
+        ImGui::Text("Width: %d", app.getWidth());
+        ImGui::Text("Height: %d", app.getHeight());
 
         ImGui::Text("Current state: %s", stateToString(app.getGenerationState()));
 
@@ -222,13 +222,13 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         if (m_showPossibilities)
         {
             ImDrawList *drawList = ImGui::GetForegroundDrawList();
-            const Scope &scope = grid.getScope();
+            const Scope &scope = app.getScope();
 
             for (int y = scope.y; y < scope.y + scope.height; ++y)
             {
                 for (int x = scope.x; x < scope.x + scope.width; ++x)
                 {
-                    const Cell &cell = grid.get(x, y);
+                    const Cell &cell = app.getCell(x, y);
 
                     std::string count = std::to_string(cell.entropy);
 
@@ -294,11 +294,11 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
         {
             wfc.generateIsland();
             m_isIslandGenerated = true;
+            app.handleEvent(GenerationEvent::Generate);
         }
 
         if (ImGui::Button("Generate"))
         {
-            wfc.startGeneration();
             app.handleEvent(GenerationEvent::Generate);
         }
 
@@ -309,7 +309,8 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
 
         if (ImGui::Button("Restore Island Shape"))
         {
-            grid.restoreState();
+            app.handleEvent(GenerationEvent::RestoreBoundaries);
+            m_isIslandGenerated = false;
         }
 
         if (wfc.isGenerating())

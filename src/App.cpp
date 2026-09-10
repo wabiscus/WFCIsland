@@ -99,7 +99,6 @@ void App::setupFSM()
             m_grid.updateUnknownCells();
             m_grid.saveState();
             m_grid.saveShape();
-
         });
 
     // ---------------------------------------------------------
@@ -169,6 +168,23 @@ void App::update()
 //     m_renderer.render();
 // }
 
+int App::getWidth() const
+{
+    return m_grid.getWidth();
+}
+
+int App::getHeight() const
+{
+    return m_grid.getHeight();
+}
+
+Cell &App::getCell(int x, int y){
+    return m_grid.get(x, y);
+}
+
+
+////
+
 GenerationState App::getGenerationState() const
 {
     return m_fsm.getState();
@@ -177,6 +193,10 @@ GenerationState App::getGenerationState() const
 int &App::getInfluencePointsCount()
 {
     return m_influencePointCount;
+}
+
+const Scope &App::getScope() const{
+    return m_grid.getScope();
 }
 
 const ScopeSize &App::getScopeSize() const

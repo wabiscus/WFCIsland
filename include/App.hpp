@@ -35,11 +35,19 @@ public:
     void render();
     void renderUI();
 
+    //// Grid interface
+    int getWidth() const;
+    int getHeight() const;
+    
+    Cell &getCell(int x, int y);
+
+    ////
     int &getInfluencePointsCount();
 
     const ScopeSize &getScopeSize() const;
+    const Scope &getScope() const;
     void setScopeSize(ScopeSize scope);
-    
+
     float &getSharpness();
     float &getRoundness();
 
