@@ -139,7 +139,7 @@ void drawTileLabel(Tile tile)
     ImGui::Dummy(ImVec2(size, size));
 }
 
-void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
+void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
 {
     switch (m_panel)
     {
@@ -341,11 +341,8 @@ void UI::render(Grid &grid, WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset
                         selected))
                 {
                     currentRuleset = type;
-                    wfc.setRuleset(type);
-                    grid.restoreShape();
-                    shapegen.fillOutsideWithWater();
-                    wfc.resetPossibilities();
-                    grid.saveState();
+                    app.switchRuleset(type);
+                    app.handleEvent(GenerationEvent::RestoreBoundaries);
 
                     // Régénération ici
                 }

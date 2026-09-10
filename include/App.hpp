@@ -51,10 +51,11 @@ public:
     float &getSharpness();
     float &getRoundness();
 
+    void switchRuleset(RulesetType type);
+
 private:
     void setupFSM();
 
-private:
     Grid &m_grid;
     Ruleset &m_ruleset;
     ShapeGenerator &m_shapeGenerator;

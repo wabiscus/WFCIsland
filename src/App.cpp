@@ -218,3 +218,7 @@ float &App::getRoundness()
 {
     return m_roundness;
 }
+
+void App::switchRuleset(RulesetType type){
+    m_wfc.setRuleset(type);
+}
