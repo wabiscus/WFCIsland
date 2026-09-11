@@ -139,7 +139,7 @@ void drawTileLabel(Tile tile)
     ImGui::Dummy(ImVec2(size, size));
 }
 
-void UI::render(WFC &wfc, App &app)
+void UI::render(App &app)
 {
     switch (m_panel)
     {
@@ -276,8 +276,7 @@ void UI::render(WFC &wfc, App &app)
 
         if (ImGui::Button("Generate One Step"))
         {
-            wfc.propagateUntilStable();
-            wfc.collapse();
+            app.generateOneStep();
         }
 
         if (m_isIslandGenerated)
@@ -292,7 +291,7 @@ void UI::render(WFC &wfc, App &app)
 
         if (ImGui::Button("Generate Island"))
         {
-            wfc.generateIsland();
+            app.generateIsland();
             m_isIslandGenerated = true;
             app.handleEvent(GenerationEvent::Generate);
         }
@@ -302,9 +301,9 @@ void UI::render(WFC &wfc, App &app)
             app.handleEvent(GenerationEvent::Generate);
         }
 
-        if (ImGui::Button(wfc.isGenerating() ? "Pause" : "Play"))
+        if (ImGui::Button(app.wfcIsGenerating() ? "Pause" : "Play"))
         {
-            wfc.toggleGeneration();
+            app.toggleGeneration();
         }
 
         if (ImGui::Button("Restore Island Shape"))
@@ -313,9 +312,9 @@ void UI::render(WFC &wfc, App &app)
             m_isIslandGenerated = false;
         }
 
-        if (wfc.isGenerating())
+        if (app.wfcIsGenerating())
         {
-            wfc.generateStep();
+            app.generateStepbyStep();
             m_isIslandGenerated = true;
         }
 

@@ -44,6 +44,14 @@ public:
     ////
     int &getInfluencePointsCount();
 
+    //// WFC interface
+
+    void generateOneStep();
+    bool wfcIsGenerating() const;
+    void generateIsland();
+    void generateStepbyStep();
+    void toggleGeneration();
+
     //// Ruleset interface
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
     const std::vector<Tile> &getTiles() const;

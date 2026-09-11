@@ -15,7 +15,7 @@ class UI
 {
 public:
     explicit UI(UIPanel panel) : m_panel(panel) {};
-    void render(WFC &wfc, App &app);
+    void render(App &app);
 
     bool isGridVisible() const;
     bool arePossibilitiesVisible() const;

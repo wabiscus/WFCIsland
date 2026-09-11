@@ -100,8 +100,8 @@ int main()
         renderer.render(grid, 280, 0, UILeft.isGridVisible(), UILeft.arePossibilitiesVisible());
 
         // ImGui ici si nécessaire
-        UILeft.render(wfc, app);
-        UIRight.render(wfc, app);
+        UILeft.render(app);
+        UIRight.render(app);
         // --------------------------------------------------
         // Rendu
         // --------------------------------------------------

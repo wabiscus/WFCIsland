@@ -183,7 +183,28 @@ Cell &App::getCell(int x, int y)
     return m_grid.get(x, y);
 }
 
-////
+//// WFC interface
+
+void App::generateOneStep(){
+    m_wfc.propagateUntilStable();
+    m_wfc.collapse();
+}
+
+bool App::wfcIsGenerating() const {
+    return m_wfc.isGenerating();
+}
+
+void App::toggleGeneration(){
+    m_wfc.toggleGeneration();
+}
+
+void App::generateIsland(){
+    m_wfc.generateIsland();
+}
+
+void App::generateStepbyStep(){
+    m_wfc.generateStep();
+}
 
 GenerationState App::getGenerationState() const
 {
