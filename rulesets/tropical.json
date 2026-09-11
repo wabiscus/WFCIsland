@@ -1,0 +1,57 @@
+{
+    "name": "Tropical",
+    "tiles": [
+        "Water",
+        "Sand",
+        "Grass"
+    ],
+    "rules": {
+        "Water": [
+            "Water",
+            "Sand"
+        ],
+        "Sand": [
+            "Water",
+            "Sand",
+            "Grass"
+        ],
+        "Grass": [
+            "Sand",
+            "Grass"
+        ]
+    },
+    "weights": [
+        {
+            "tiles": [
+                "Water",
+                "Sand"
+            ],
+            "values": [
+                8,
+                2
+            ]
+        },
+        {
+            "tiles": [
+                "Water",
+                "Sand",
+                "Grass"
+            ],
+            "values": [
+                1,
+                4,
+                5
+            ]
+        },
+        {
+            "tiles": [
+                "Sand",
+                "Grass"
+            ],
+            "values": [
+                4,
+                6
+            ]
+        }
+    ]
+}

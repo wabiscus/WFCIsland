@@ -15,6 +15,14 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SDL3)
 
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.12.0
+)
+
+FetchContent_MakeAvailable(nlohmann_json)
+
 add_executable(
     WFC
 
@@ -26,6 +34,7 @@ add_executable(
     src/ShapeGenerator.cpp
     src/Ruleset.cpp
     src/App.cpp
+    src/Utils.cpp
     
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
@@ -48,6 +57,7 @@ target_link_libraries(
     WFC PRIVATE
 
     SDL3::SDL3
+    nlohmann_json::nlohmann_json
 )
 
 add_custom_command(TARGET WFC POST_BUILD
