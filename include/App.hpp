@@ -52,7 +52,7 @@ public:
     void generateIsland();
     void generateStepbyStep();
     void toggleGeneration();
-    bool isGeneratingPaused() const;
+    bool isGeneratingRunning() const;
 
     //// Ruleset interface
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
@@ -84,5 +84,5 @@ private:
     int m_influencePointCount = 6;
     float m_sharpness = 2.5f;
     float m_roundness = 0.0f;
-    bool m_generationPaused = true;
+    bool m_generationRunning = false;
 };

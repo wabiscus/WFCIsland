@@ -295,12 +295,12 @@ void UI::render(App &app)
             m_isIslandGenerated = true;
         }
 
-        if (ImGui::Button("Generate"))
+        if (ImGui::Button("Generate Step By Step"))
         {
             app.handleEvent(GenerationEvent::GenerateStepByStep);
         }
 
-        if (ImGui::Button(app.isGeneratingPaused() ? "Pause" : "Play"))
+        if (ImGui::Button(app.isGeneratingRunning() ? "Pause" : "Play"))
         {
             app.toggleGeneration();
         }
@@ -311,11 +311,11 @@ void UI::render(App &app)
             m_isIslandGenerated = false;
         }
 
-        if (!app.isGeneratingPaused())
-        {
-            app.generateStepbyStep();
-            m_isIslandGenerated = true;
-        }
+        // if (app.isGeneratingRunning())
+        // {
+        //     app.generateStepbyStep();
+        //     m_isIslandGenerated = true;
+        // }
 
         if (!m_isShapeGenerated)
         {

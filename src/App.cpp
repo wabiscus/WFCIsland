@@ -118,6 +118,7 @@ void App::setupFSM()
             m_shapeGenerator.fillOutsideWithWater();
             m_shapeGenerator.defineBoundary();
             m_wfc.resetPossibilities();
+            m_grid.updateUnknownCells();
             m_grid.saveState();
         });
 
@@ -129,7 +130,7 @@ void App::setupFSM()
         GenerationState::Generating,
         [this]()
         {
-            m_generationPaused = false;
+            m_generationRunning = true;
         });
 
     // ---------------------------------------------------------
@@ -144,9 +145,10 @@ void App::setupFSM()
 
             if (!m_wfc.hasContradiction())
             {
+                m_generationRunning = false;
                 m_fsm.transitionTo(GenerationState::Generated);
             }
-                });
+        });
 
     // ---------------------------------------------------------
     // Enter Generated
@@ -170,7 +172,7 @@ void App::update()
     if (!m_fsm.is(GenerationState::Generating))
         return;
 
-    if (m_generationPaused)
+    if (!m_generationRunning)
         return;
 
     m_wfc.generateStep();
@@ -180,6 +182,7 @@ void App::update()
 
     if (m_wfc.isFinished())
     {
+        m_generationRunning = false;
         m_fsm.transitionTo(GenerationState::Generated);
     }
 }
@@ -214,11 +217,12 @@ void App::generateOneStep()
 
 void App::toggleGeneration()
 {
-    m_generationPaused = !m_generationPaused;
+    m_generationRunning = !m_generationRunning;
 }
 
-bool App::isGeneratingPaused() const{
-    return m_generationPaused;
+bool App::isGeneratingRunning() const
+{
+    return m_generationRunning;
 }
 
 void App::generateIsland()
