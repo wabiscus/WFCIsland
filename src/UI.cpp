@@ -139,7 +139,7 @@ void drawTileLabel(Tile tile)
     ImGui::Dummy(ImVec2(size, size));
 }
 
-void UI::render(WFC &wfc, ShapeGenerator &shapegen, App &app)
+void UI::render(WFC &wfc, App &app)
 {
     switch (m_panel)
     {
