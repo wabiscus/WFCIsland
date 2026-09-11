@@ -1,0 +1,75 @@
+{
+    "name": "Forest",
+    "tiles": [
+        "Water",
+        "Sand",
+        "Grass",
+        "Forest"
+    ],
+    "rules": {
+        "Water": [
+            "Water",
+            "Sand"
+        ],
+        "Sand": [
+            "Water",
+            "Sand",
+            "Grass"
+        ],
+        "Grass": [
+            "Sand",
+            "Grass",
+            "Forest"
+        ],
+        "Forest": [
+            "Grass",
+            "Forest"
+        ]
+    },
+    "weights": [
+        {
+            "tiles": [
+                "Water",
+                "Sand"
+            ],
+            "values": [
+                8,
+                2
+            ]
+        },
+        {
+            "tiles": [
+                "Water",
+                "Sand",
+                "Grass"
+            ],
+            "values": [
+                1,
+                4,
+                5
+            ]
+        },
+        {
+            "tiles": [
+                "Sand",
+                "Grass",
+                "Forest"
+            ],
+            "values": [
+                2,
+                5,
+                3
+            ]
+        },
+        {
+            "tiles": [
+                "Grass",
+                "Forest"
+            ],
+            "values": [
+                4,
+                6
+            ]
+        }
+    ]
+}

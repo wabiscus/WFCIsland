@@ -1,0 +1,57 @@
+{
+    "name": "Volcanic",
+    "tiles": [
+        "Water",
+        "Rock",
+        "Lava"
+    ],
+    "rules": {
+        "Water": [
+            "Water",
+            "Rock"
+        ],
+        "Rock": [
+            "Water",
+            "Rock",
+            "Lava"
+        ],
+        "Lava": [
+            "Rock",
+            "Lava"
+        ]
+    },
+    "weights": [
+        {
+            "tiles": [
+                "Water",
+                "Rock"
+            ],
+            "values": [
+                5,
+                5
+            ]
+        },
+        {
+            "tiles": [
+                "Water",
+                "Rock",
+                "Lava"
+            ],
+            "values": [
+                1,
+                5,
+                4
+            ]
+        },
+        {
+            "tiles": [
+                "Rock",
+                "Lava"
+            ],
+            "values": [
+                4,
+                6
+            ]
+        }
+    ]
+}

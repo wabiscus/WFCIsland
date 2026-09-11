@@ -1,0 +1,57 @@
+{
+    "name": "Desert",
+    "tiles": [
+        "Water",
+        "Sand",
+        "Rock"
+    ],
+    "rules": {
+        "Water": [
+            "Water",
+            "Sand"
+        ],
+        "Sand": [
+            "Water",
+            "Sand",
+            "Rock"
+        ],
+        "Rock": [
+            "Sand",
+            "Rock"
+        ]
+    },
+    "weights": [
+        {
+            "tiles": [
+                "Water",
+                "Sand"
+            ],
+            "values": [
+                5,
+                6
+            ]
+        },
+        {
+            "tiles": [
+                "Water",
+                "Sand",
+                "Rock"
+            ],
+            "values": [
+                1,
+                4,
+                5
+            ]
+        },
+        {
+            "tiles": [
+                "Sand",
+                "Rock"
+            ],
+            "values": [
+                4,
+                6
+            ]
+        }
+    ]
+}

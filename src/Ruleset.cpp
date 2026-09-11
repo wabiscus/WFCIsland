@@ -55,6 +55,12 @@ void Ruleset::loadRuleset(RulesetType type)
     json data;
     file >> data;
 
+    for (const auto &tileName : data.at("tiles"))
+    {
+        m_tiles.push_back(
+            tileFromString(tileName.get<std::string>()));
+    }
+
     for (const auto &[tileName, neighborsJson] : data.at("rules").items())
     {
         Tile tile = tileFromString(tileName);
@@ -90,6 +96,16 @@ void Ruleset::loadRuleset(RulesetType type)
     }
 
     m_name = data.at("name").get<std::string>();
+
+    for (Tile tile : m_tiles)
+    {
+        if (!m_allowedNeighbors.contains(tile))
+        {
+            throw std::runtime_error(
+                "Missing rules for tile: " +
+                std::string(tileToString(tile)));
+        }
+    }
 }
 
 // void Ruleset::loadRuleset(RulesetType type)
