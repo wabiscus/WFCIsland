@@ -291,17 +291,16 @@ void UI::render(App &app)
 
         if (ImGui::Button("Generate Island"))
         {
-            app.generateIsland();
+            app.handleEvent(GenerationEvent::GenerateIsland);
             m_isIslandGenerated = true;
-            app.handleEvent(GenerationEvent::Generate);
         }
 
         if (ImGui::Button("Generate"))
         {
-            app.handleEvent(GenerationEvent::Generate);
+            app.handleEvent(GenerationEvent::GenerateStepByStep);
         }
 
-        if (ImGui::Button(app.wfcIsGenerating() ? "Pause" : "Play"))
+        if (ImGui::Button(app.isGeneratingPaused() ? "Pause" : "Play"))
         {
             app.toggleGeneration();
         }
@@ -312,7 +311,7 @@ void UI::render(App &app)
             m_isIslandGenerated = false;
         }
 
-        if (app.wfcIsGenerating())
+        if (!app.isGeneratingPaused())
         {
             app.generateStepbyStep();
             m_isIslandGenerated = true;

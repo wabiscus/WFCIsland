@@ -34,7 +34,6 @@ public:
     bool isGenerating() const;
 
     void startGeneration();
-    void toggleGeneration();
 
     void setRuleset(RulesetType newRulset);
 
@@ -47,6 +46,5 @@ private:
     Ruleset &m_ruleset;
     std::mt19937 m_generator;
     bool m_contradiction = false;
-    bool m_generating = false;
     std::queue<CellPosition> m_propagationQueue;
 };

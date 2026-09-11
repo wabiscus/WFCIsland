@@ -46,7 +46,7 @@ void App::setupFSM()
 
     m_fsm.addTransition(
         GenerationState::BoundariesDefined,
-        GenerationEvent::Generate,
+        GenerationEvent::GenerateStepByStep,
         GenerationState::Generating);
 
     m_fsm.addTransition(
@@ -68,6 +68,11 @@ void App::setupFSM()
         GenerationState::BoundariesDefined,
         GenerationEvent::RestoreShape,
         GenerationState::Shape);
+
+    m_fsm.addTransition(
+        GenerationState::BoundariesDefined,
+        GenerationEvent::GenerateIsland,
+        GenerationState::GeneratingInstantly);
 
     m_fsm.addTransition(
         GenerationState::Generating,
@@ -124,8 +129,24 @@ void App::setupFSM()
         GenerationState::Generating,
         [this]()
         {
-            m_wfc.startGeneration();
+            m_generationPaused = false;
         });
+
+    // ---------------------------------------------------------
+    // Enter GeneratingInstantly
+    // ---------------------------------------------------------
+
+    m_fsm.onEnter(
+        GenerationState::GeneratingInstantly,
+        [this]()
+        {
+            m_wfc.generateIsland();
+
+            if (!m_wfc.hasContradiction())
+            {
+                m_fsm.transitionTo(GenerationState::Generated);
+            }
+                });
 
     // ---------------------------------------------------------
     // Enter Generated
@@ -146,20 +167,20 @@ void App::handleEvent(GenerationEvent event)
 
 void App::update()
 {
-    if (m_fsm.is(GenerationState::Generating))
+    if (!m_fsm.is(GenerationState::Generating))
+        return;
+
+    if (m_generationPaused)
+        return;
+
+    m_wfc.generateStep();
+
+    if (m_wfc.hasContradiction())
+        return;
+
+    if (m_wfc.isFinished())
     {
-        m_wfc.generateStep();
-
-        if (m_wfc.hasContradiction())
-        {
-            // À terme, ajouter un état Contradiction.
-            return;
-        }
-
-        if (m_wfc.isFinished())
-        {
-            m_fsm.transitionTo(GenerationState::Generated);
-        }
+        m_fsm.transitionTo(GenerationState::Generated);
     }
 }
 
@@ -185,24 +206,28 @@ Cell &App::getCell(int x, int y)
 
 //// WFC interface
 
-void App::generateOneStep(){
+void App::generateOneStep()
+{
     m_wfc.propagateUntilStable();
     m_wfc.collapse();
 }
 
-bool App::wfcIsGenerating() const {
-    return m_wfc.isGenerating();
+void App::toggleGeneration()
+{
+    m_generationPaused = !m_generationPaused;
 }
 
-void App::toggleGeneration(){
-    m_wfc.toggleGeneration();
+bool App::isGeneratingPaused() const{
+    return m_generationPaused;
 }
 
-void App::generateIsland(){
+void App::generateIsland()
+{
     m_wfc.generateIsland();
 }
 
-void App::generateStepbyStep(){
+void App::generateStepbyStep()
+{
     m_wfc.generateStep();
 }
 
@@ -232,7 +257,8 @@ const std::string &App::getName() const
     return m_ruleset.getName();
 }
 
-const RulesetType App::getType() const{
+const RulesetType App::getType() const
+{
     return m_ruleset.getType();
 }
 

@@ -10,6 +10,7 @@ enum class GenerationState
     Shape,
     BoundariesDefined,
     Generating,
+    GeneratingInstantly,
     Generated
 };
 
@@ -17,9 +18,10 @@ enum class GenerationEvent
 {
     GenerateShape,
     DefineBoundary,
-    Generate,
+    GenerateStepByStep,
     RestoreShape,
-    RestoreBoundaries
+    RestoreBoundaries,
+    GenerateIsland
 };
 
 class App
@@ -47,10 +49,10 @@ public:
     //// WFC interface
 
     void generateOneStep();
-    bool wfcIsGenerating() const;
     void generateIsland();
     void generateStepbyStep();
     void toggleGeneration();
+    bool isGeneratingPaused() const;
 
     //// Ruleset interface
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
@@ -82,4 +84,5 @@ private:
     int m_influencePointCount = 6;
     float m_sharpness = 2.5f;
     float m_roundness = 0.0f;
+    bool m_generationPaused = true;
 };

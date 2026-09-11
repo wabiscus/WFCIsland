@@ -242,37 +242,15 @@ void WFC::generateStep()
 {
     if (!m_grid.hasUnknownCells())
     {
-        m_generating = false;
         return;
     }
 
     collapse();
     propagateUntilStable();
-
-    if (hasContradiction())
-    {
-        m_generating = false;
-    }
-
     // if (!m_grid.hasUnknownCells())
     // {
     //     m_fsm.transitionTo(GenerationState::Generated);
     // }
-}
-
-bool WFC::isGenerating() const
-{
-    return m_generating;
-}
-
-void WFC::startGeneration()
-{
-    m_generating = true;
-}
-
-void WFC::toggleGeneration()
-{
-    m_generating = !m_generating;
 }
 
 void WFC::setRuleset(RulesetType type)
