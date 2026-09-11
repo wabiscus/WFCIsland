@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include <string>
 #include <cstring>
+#include <algorithm>
 
 const char *tileToString(Tile tile)
 {
@@ -398,39 +399,42 @@ void UI::render(App &app)
                 if (ImGui::BeginTabBar("TileWeights"))
                 {
                     const auto &allWeights = app.getWeights();
-
-                    for (const auto &[possibilities, weights] : allWeights)
+                    for (const Tile &tile : app.getTiles())
                     {
-                        std::string tabName = "{";
-
-                        for (std::size_t i = 0; i < possibilities.size(); ++i)
+                        if (ImGui::BeginTabItem(tileToString(tile)))
                         {
-                            if (i > 0)
-                                tabName += ", ";
-
-                            tabName += tileToString(possibilities[i]);
-                        }
-
-                        tabName += "}";
-
-                        if (ImGui::BeginTabItem(tabName.c_str()))
-                        {
-                            std::vector<int> &editableWeights =
-                                app.getWeights(possibilities);
-
-                            for (std::size_t i = 0; i < possibilities.size(); ++i)
+                            const std::vector<Tile> neighbors = app.getAllowedNeighbors(tile); // Cherche les poids correspondant exactement // aux voisins de cette tile.
+                            auto it = allWeights.find(neighbors);
+                            if (it != allWeights.end())
                             {
-                                ImGui::SliderInt(
-                                    tileToString(possibilities[i]),
-                                    &editableWeights[i],
-                                    0,
-                                    10);
-                            }
+                                std::vector<int> &editableWeights = app.getWeights(it->first);
+                                for (std::size_t i = 0; i < neighbors.size(); ++i)
+                                {
+                                    Tile neighbor = neighbors[i];
 
+                                    ImGui::Text("%s", tileToString(neighbor));
+                                    ImGui::SameLine();
+
+                                    ImGui::ColorButton(
+                                        ("##tileColor_" + std::to_string(i)).c_str(),
+                                        ImGui::ColorConvertU32ToFloat4(tileToColor(neighbor)),
+                                        ImGuiColorEditFlags_NoTooltip,
+                                        ImVec2(14.0f, 14.0f));
+
+                                    ImGui::SameLine();
+
+                                    ImGui::SetNextItemWidth(150.0f);
+
+                                    ImGui::SliderInt(
+                                        ("##weight_" + std::to_string(i)).c_str(),
+                                        &editableWeights[i],
+                                        0,
+                                        10);
+                                }
+                            }
                             ImGui::EndTabItem();
                         }
                     }
-
                     ImGui::EndTabBar();
                 }
 
