@@ -1,10 +1,29 @@
 #pragma once
 
 #include "Grid.hpp"
-#include "Ruleset.hpp"
 #include "imgui.h"
-#include "App.hpp"
 #include <string>
+#include <stdexcept>
+
+enum class RulesetType
+{
+    Tropical,
+    Desert,
+    Forest,
+    Volcanic,
+
+    Count
+};
+
+enum class GenerationState
+{
+    Empty,
+    Shape,
+    BoundariesDefined,
+    Generating,
+    GeneratingInstantly,
+    Generated
+};
 
 const char* tileToString(Tile tile);
 Tile tileFromString(const std::string& name);

@@ -9,6 +9,10 @@ enum class Tile
     Water,
     Sand,
     Grass,
+    Forest,
+    Rock,
+    Snow,
+    Lava,
     Contradiction
 };
 

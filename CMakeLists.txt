@@ -35,7 +35,7 @@ add_executable(
     src/Ruleset.cpp
     src/App.cpp
     src/Utils.cpp
-    
+
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
     external/imgui/imgui_tables.cpp
@@ -64,4 +64,10 @@ add_custom_command(TARGET WFC POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_FILE:SDL3::SDL3>
         $<TARGET_FILE_DIR:WFC>
+)
+
+add_custom_command(TARGET WFC POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/rulesets
+        $<TARGET_FILE_DIR:WFC>/rulesets
 )

@@ -3,16 +3,7 @@
 #include "FSM.hpp"
 #include "WFC.hpp"
 #include "ShapeGenerator.hpp"
-
-enum class GenerationState
-{
-    Empty,
-    Shape,
-    BoundariesDefined,
-    Generating,
-    GeneratingInstantly,
-    Generated
-};
+#include "Utils.hpp"
 
 enum class GenerationEvent
 {

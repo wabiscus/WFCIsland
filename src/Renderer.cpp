@@ -40,6 +40,22 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
                 SDL_SetRenderDrawColor(m_renderer, 70, 160, 70, 255);
                 break;
 
+            case Tile::Forest:
+                SDL_SetRenderDrawColor(m_renderer, 30, 110, 50, 255);
+                break;
+
+            case Tile::Rock:
+                SDL_SetRenderDrawColor(m_renderer, 100, 100, 100, 255);
+                break;
+
+            case Tile::Snow:
+                SDL_SetRenderDrawColor(m_renderer, 230, 230, 240, 255);
+                break;
+
+            case Tile::Lava:
+                SDL_SetRenderDrawColor(m_renderer, 220, 70, 30, 255);
+                break;
+
             case Tile::Contradiction:
                 SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
                 break;

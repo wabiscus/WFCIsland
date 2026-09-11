@@ -1,17 +1,13 @@
 #pragma once
 #include "Grid.hpp"
+#include "Utils.hpp"
 #include <string>
 #include <map>
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <stdexcept>
 
-enum class RulesetType
-{
-    Tropical,
-    Desert,
-    Forest,
-    Volcanic,
-
-    Count
-};
+using json = nlohmann::json;
 
 class Ruleset
 {
@@ -40,5 +36,6 @@ private:
     RulesetType m_type;
     std::string m_name;
     std::vector<Tile> m_tiles;
+    std::map<Tile, std::vector<Tile>> m_allowedNeighbors;
     std::map<std::vector<Tile>, std::vector<int>> m_weights;
 };
