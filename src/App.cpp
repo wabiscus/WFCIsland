@@ -178,10 +178,10 @@ int App::getHeight() const
     return m_grid.getHeight();
 }
 
-Cell &App::getCell(int x, int y){
+Cell &App::getCell(int x, int y)
+{
     return m_grid.get(x, y);
 }
-
 
 ////
 
@@ -195,7 +195,39 @@ int &App::getInfluencePointsCount()
     return m_influencePointCount;
 }
 
-const Scope &App::getScope() const{
+//// Ruleset interface
+std::vector<Tile> App::getAllowedNeighbors(Tile tile) const
+{
+    return m_ruleset.getAllowedNeighbors(tile);
+}
+
+const std::vector<Tile> &App::getTiles() const
+{
+    return m_ruleset.getTiles();
+}
+
+const std::string &App::getName() const
+{
+    return m_ruleset.getName();
+}
+
+const RulesetType App::getType() const{
+    return m_ruleset.getType();
+}
+
+const std::map<std::vector<Tile>, std::vector<int>> &App::getWeights() const
+{
+    return m_ruleset.getWeights();
+}
+
+std::vector<int> &App::getWeights(const std::vector<Tile> &possibilities)
+{
+    return m_ruleset.getWeights(possibilities);
+}
+////
+
+const Scope &App::getScope() const
+{
     return m_grid.getScope();
 }
 
@@ -219,6 +251,7 @@ float &App::getRoundness()
     return m_roundness;
 }
 
-void App::switchRuleset(RulesetType type){
+void App::switchRuleset(RulesetType type)
+{
     m_wfc.setRuleset(type);
 }

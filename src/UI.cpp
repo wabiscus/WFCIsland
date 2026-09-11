@@ -139,7 +139,7 @@ void drawTileLabel(Tile tile)
     ImGui::Dummy(ImVec2(size, size));
 }
 
-void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
+void UI::render(WFC &wfc, ShapeGenerator &shapegen, App &app)
 {
     switch (m_panel)
     {
@@ -246,7 +246,7 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
         }
 
         ImGui::Text("Boundary Possible Tiles :");
-        for (Tile tileNeighbor : ruleset.getAllowedNeighbors(Tile::Water))
+        for (Tile tileNeighbor : app.getAllowedNeighbors(Tile::Water))
         {
             drawTileLabel(tileNeighbor);
         }
@@ -324,7 +324,7 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
             ImGui::EndDisabled();
         }
 
-        RulesetType currentRuleset = ruleset.getType();
+        RulesetType currentRuleset = app.getType();
 
         if (ImGui::BeginCombo(
                 "Ruleset",
@@ -342,7 +342,7 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
                 {
                     currentRuleset = type;
                     app.switchRuleset(type);
-                    app.handleEvent(GenerationEvent::RestoreBoundaries);
+                    app.handleEvent(GenerationEvent::RestoreShape);
 
                     // Régénération ici
                 }
@@ -373,12 +373,12 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
         {
             if (ImGui::BeginTabItem("Ruleset"))
             {
-                ImGui::Text("Current Ruleset : %s", ruleset.getName().c_str());
+                ImGui::Text("Current Ruleset : %s", app.getName().c_str());
 
                 ImGui::Separator();
 
                 ImGui::Text("Current Tiles : ");
-                for (const Tile &tile : ruleset.getTiles())
+                for (const Tile &tile : app.getTiles())
                 {
                     drawTileLabel(tile);
                 }
@@ -386,11 +386,11 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
                 ImGui::Separator();
 
                 ImGui::Text("Current Rules :");
-                for (const Tile &tile : ruleset.getTiles())
+                for (const Tile &tile : app.getTiles())
                 {
                     drawTileLabel(tile);
                     ImGui::Text("  -> ");
-                    for (Tile tileNeighbor : ruleset.getAllowedNeighbors(tile))
+                    for (Tile tileNeighbor : app.getAllowedNeighbors(tile))
                     {
                         drawTileLabel(tileNeighbor);
                     }
@@ -399,7 +399,7 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
 
                 if (ImGui::BeginTabBar("TileWeights"))
                 {
-                    const auto &allWeights = ruleset.getWeights();
+                    const auto &allWeights = app.getWeights();
 
                     for (const auto &[possibilities, weights] : allWeights)
                     {
@@ -418,7 +418,7 @@ void UI::render(WFC &wfc, ShapeGenerator &shapegen, Ruleset &ruleset, App &app)
                         if (ImGui::BeginTabItem(tabName.c_str()))
                         {
                             std::vector<int> &editableWeights =
-                                ruleset.getWeights(possibilities);
+                                app.getWeights(possibilities);
 
                             for (std::size_t i = 0; i < possibilities.size(); ++i)
                             {

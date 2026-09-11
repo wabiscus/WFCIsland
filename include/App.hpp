@@ -38,12 +38,20 @@ public:
     //// Grid interface
     int getWidth() const;
     int getHeight() const;
-    
+
     Cell &getCell(int x, int y);
 
     ////
     int &getInfluencePointsCount();
 
+    //// Ruleset interface
+    std::vector<Tile> getAllowedNeighbors(Tile tile) const;
+    const std::vector<Tile> &getTiles() const;
+    const std::string &getName() const;
+    const RulesetType getType() const;
+    const std::map<std::vector<Tile>, std::vector<int>> &getWeights() const;
+    std::vector<int> &getWeights(const std::vector<Tile> &possibilities);
+    ////
     const ScopeSize &getScopeSize() const;
     const Scope &getScope() const;
     void setScopeSize(ScopeSize scope);
