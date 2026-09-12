@@ -97,7 +97,6 @@ void App::setupFSM()
         GenerationState::Shape,
         [this]()
         {
-            randomizeSeed();
             m_wfc.regenerateMap();
             m_shapeGenerator.generate(m_influencePointCount, m_sharpness, m_roundness);
             m_shapeGenerator.connectPoints();

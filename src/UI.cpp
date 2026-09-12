@@ -33,6 +33,12 @@ void drawTileLabel(Tile tile)
 
 void UI::render(App &app)
 {
+    if (!m_seedInitialized)
+    {
+        m_seed = app.getSeed();
+        m_seedInitialized = true;
+    }
+
     switch (m_panel)
     {
     case UIPanel::Left:
@@ -55,6 +61,8 @@ void UI::render(App &app)
         ImGui::Spacing();
         if (ImGui::Button("Generate Island Shape"))
         {
+            app.randomizeSeed();
+            m_seed = app.getSeed();
             app.handleEvent(GenerationEvent::GenerateShape);
             m_isIslandGenerated = false;
             m_isShapeGenerated = true;
@@ -62,6 +70,17 @@ void UI::render(App &app)
         }
 
         ImGui::Text("Seed : %u", app.getSeed());
+
+        ImGui::InputScalar(
+            "Seed",
+            ImGuiDataType_U32,
+            &m_seed);
+        if (ImGui::Button("Set Seed"))
+        {
+            app.setSeed(m_seed);
+            m_seed = app.getSeed();
+            app.handleEvent(GenerationEvent::GenerateShape);
+        }
 
         ImGui::Separator();
 
@@ -205,12 +224,6 @@ void UI::render(App &app)
             m_isIslandGenerated = false;
         }
 
-        // if (app.isGeneratingRunning())
-        // {
-        //     app.generateStepbyStep();
-        //     m_isIslandGenerated = true;
-        // }
-
         if (!m_isShapeGenerated)
         {
             ImGui::EndDisabled();
@@ -233,6 +246,8 @@ void UI::render(App &app)
                         selected))
                 {
                     currentRuleset = type;
+                    m_seed = app.getSeed();
+                    app.setSeed(m_seed);
                     app.switchRuleset(type);
                     app.handleEvent(GenerationEvent::RestoreShape);
 
