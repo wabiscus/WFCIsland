@@ -1,4 +1,5 @@
 #include "Ruleset.hpp"
+#include <iostream>
 
 Ruleset::Ruleset(RulesetType type)
 {
@@ -13,14 +14,6 @@ void Ruleset::loadRuleset(RulesetType type)
     m_tiles.clear();
     m_allowedNeighbors.clear();
     m_weights.clear();
-
-    // trouver le fichier
-    // ouvrir le JSON
-    // parser
-    // charger name
-    // charger tiles
-    // charger rules
-    // charger weights
 
     std::string filename;
 
@@ -108,65 +101,6 @@ void Ruleset::loadRuleset(RulesetType type)
     }
 }
 
-// void Ruleset::loadRuleset(RulesetType type)
-// {
-//     m_type = type;
-
-//     m_tiles.clear();
-//     m_weights.clear();
-
-//     switch (type)
-//     {
-//     case RulesetType::Tropical:
-//         m_name = "Tropical";
-//         m_tiles = {
-//             Tile::Water,
-//             Tile::Sand,
-//             Tile::Grass,
-//             // Tile::Forest
-//         };
-//         m_weights[{Tile::Water, Tile::Sand}] = {8, 2};
-//         m_weights[{Tile::Water, Tile::Sand, Tile::Grass}] = {1, 4, 5};
-//         m_weights[{Tile::Sand, Tile::Grass}] = {4, 6};
-//         break;
-
-//     case RulesetType::Desert:
-//         m_name = "Desert";
-//         m_tiles = {
-//             Tile::Water,
-//             Tile::Sand,
-//             Tile::Rock};
-//         m_weights[{Tile::Water, Tile::Sand}] = {5, 6};
-//         m_weights[{Tile::Water, Tile::Sand, Tile::Rock}] = {1, 1, 8};
-//         break;
-
-//     case RulesetType::Forest:
-//         m_name = "Forest";
-//         m_tiles = {
-//             Tile::Water,
-//             Tile::Sand,
-//             Tile::Grass,
-//             Tile::Forest};
-//         m_weights[{Tile::Water, Tile::Sand}] = {8, 2};
-//         m_weights[{Tile::Water, Tile::Sand, Tile::Grass}] = {1, 4, 5};
-//         m_weights[{Tile::Sand, Tile::Grass}] = {4, 6};
-//         m_weights[{Tile::Grass, Tile::Forest}] = {4, 8};
-//         break;
-
-//     case RulesetType::Volcanic:
-//         m_name = "Volcanic";
-//         m_tiles = {
-//             Tile::Water,
-//             // Tile::Rock,
-//             // Tile::Lava
-//         };
-//         break;
-
-//     default:
-//         break;
-//     }
-// }
-
 std::vector<Tile> Ruleset::getAllowedNeighbors(Tile tile) const
 {
     auto it = m_allowedNeighbors.find(tile);
@@ -192,9 +126,36 @@ const std::map<std::vector<Tile>, std::vector<int>> &Ruleset::getWeights() const
     return m_weights;
 }
 
-std::vector<int> &Ruleset::getWeights(const std::vector<Tile> &possibilities)
+std::vector<int> &Ruleset::getWeights(
+    const std::vector<Tile> &possibilities)
 {
-    return m_weights.at(possibilities);
+    auto it = m_weights.find(possibilities);
+
+    if (it == m_weights.end())
+    {
+        std::cout << "Missing weights: { ";
+
+        for (Tile tile : possibilities)
+            std::cout << tileToString(tile) << " ";
+
+        std::cout << "}\n";
+
+        std::cout << "Available weights:\n";
+
+        for (const auto &[tiles, weights] : m_weights)
+        {
+            std::cout << "{ ";
+
+            for (Tile tile : tiles)
+                std::cout << tileToString(tile) << " ";
+
+            std::cout << "}\n";
+        }
+
+        throw std::out_of_range("Missing weights");
+    }
+
+    return it->second;
 }
 
 void Ruleset::setWeights(
