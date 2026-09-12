@@ -15,6 +15,22 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(SDL3)
 
+set(SDLIMAGE_PNG ON CACHE BOOL "Enable PNG support" FORCE)
+
+set(SDLIMAGE_AVIF OFF CACHE BOOL "Disable AVIF support" FORCE)
+set(SDLIMAGE_JXL OFF CACHE BOOL "Disable JPEG-XL support" FORCE)
+set(SDLIMAGE_WEBP OFF CACHE BOOL "Disable WebP support" FORCE)
+set(SDLIMAGE_TIF OFF CACHE BOOL "Disable TIFF support" FORCE)
+set(SDLIMAGE_JPG OFF CACHE BOOL "Disable JPEG support" FORCE)
+
+FetchContent_Declare(
+    SDL3_image
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+    GIT_TAG release-3.2.0
+)
+
+FetchContent_MakeAvailable(SDL3_image)
+
 FetchContent_Declare(
     nlohmann_json
     GIT_REPOSITORY https://github.com/nlohmann/json.git
@@ -57,12 +73,19 @@ target_link_libraries(
     WFC PRIVATE
 
     SDL3::SDL3
+    SDL3_image::SDL3_image
     nlohmann_json::nlohmann_json
 )
 
 add_custom_command(TARGET WFC POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         $<TARGET_FILE:SDL3::SDL3>
+        $<TARGET_FILE_DIR:WFC>
+)
+
+add_custom_command(TARGET WFC POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        $<TARGET_FILE:SDL3_image::SDL3_image>
         $<TARGET_FILE_DIR:WFC>
 )
 

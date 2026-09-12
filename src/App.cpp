@@ -1,14 +1,20 @@
 #include "App.hpp"
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 App::App(
     Grid &grid,
     Ruleset &ruleset,
     ShapeGenerator &shape,
-    WFC &wfc)
+    WFC &wfc,
+    Renderer &renderer)
     : m_grid(grid),
       m_ruleset(ruleset),
       m_shapeGenerator(shape),
-      m_wfc(wfc)
+      m_wfc(wfc),
+      m_renderer(renderer)
 {
     setupFSM();
 }
@@ -187,10 +193,10 @@ void App::update()
     }
 }
 
-// void App::render()
-// {
-//     m_renderer.render();
-// }
+void App::render(int offsetX, int offsetY, bool showGrid, bool showPossibilities)
+{
+    m_renderer.render(m_grid, offsetX, offsetY, showGrid, showPossibilities);
+}
 
 int App::getWidth() const
 {
@@ -262,6 +268,27 @@ GenerationState App::getGenerationState() const
 int &App::getInfluencePointsCount()
 {
     return m_influencePointCount;
+}
+
+void App::exportIsland()
+{
+    const auto now = std::chrono::system_clock::now();
+    const std::time_t time = std::chrono::system_clock::to_time_t(now);
+
+    std::tm localTime{};
+
+    localtime_s(&localTime, &time);
+
+    std::ostringstream filename;
+
+    filename << "exports/island_"
+             << std::put_time(&localTime, "%Y%m%d_%H%M%S")
+             << ".png";
+
+    m_renderer.exportImage(
+        m_grid,
+        filename.str(),
+        8);
 }
 
 //// Ruleset interface

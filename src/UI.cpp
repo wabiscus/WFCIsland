@@ -263,6 +263,11 @@ void UI::render(App &app)
             ImGui::EndCombo();
         }
 
+        if (ImGui::Button("Export Island"))
+        {
+            app.exportIsland();
+        }
+
         break;
     }
     case UIPanel::Right:

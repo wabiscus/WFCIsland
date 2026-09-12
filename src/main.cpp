@@ -41,7 +41,7 @@ int main()
     UI UIRight(UIPanel::Right);
     ShapeGenerator shapegen(grid, ruleset);
 
-    App app(grid, ruleset, shapegen, wfc);
+    App app(grid, ruleset, shapegen, wfc, renderer);
 
     if (!window)
     {
@@ -97,7 +97,7 @@ int main()
 
         app.update();
 
-        renderer.render(grid, 280, 0, UILeft.isGridVisible(), UILeft.arePossibilitiesVisible());
+        app.render(280, 0, UILeft.isGridVisible(), UILeft.arePossibilitiesVisible());
 
         // ImGui ici si nécessaire
         UILeft.render(app);

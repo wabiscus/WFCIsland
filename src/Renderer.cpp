@@ -1,9 +1,49 @@
 #include "Renderer.hpp"
 #include "Grid.hpp"
+#include "Utils.hpp"
+#include <SDL3_image/SDL_image.h>
 
 Renderer::Renderer(SDL_Renderer *renderer)
     : m_renderer(renderer)
 {
+}
+
+static SDL_Color tileToColorExport(Tile tile)
+{
+    switch (tile)
+    {
+    case Tile::Water:
+        return {50, 120, 200, 255};
+
+    case Tile::Sand:
+        return {220, 190, 100, 255};
+
+    case Tile::Grass:
+        return {80, 160, 70, 255};
+
+    case Tile::Forest:
+        return {40, 100, 50, 255};
+
+    case Tile::Rock:
+        return {120, 120, 120, 255};
+
+    case Tile::Snow:
+        return {240, 240, 240, 255};
+
+    case Tile::Lava:
+        return {220, 60, 30, 255};
+
+    case Tile::Boundary:
+        return {0, 0, 0, 255};
+
+    case Tile::Unknown:
+        return {0, 0, 0, 255};
+
+    case Tile::Contradiction:
+        return {255, 0, 255, 255};
+    }
+
+    return {0, 0, 0, 255};
 }
 
 void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid, bool showPossibilities)
@@ -79,4 +119,65 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
             }
         }
     }
+}
+
+bool Renderer::exportImage(
+    const Grid &grid,
+    const std::string &path,
+    int scale)
+{
+    const int width = grid.getWidth() * scale;
+    const int height = grid.getHeight() * scale;
+
+    SDL_Surface *surface = SDL_CreateSurface(
+        width,
+        height,
+        SDL_PIXELFORMAT_RGBA32);
+
+    if (surface == nullptr)
+        return false;
+
+    for (int y = 0; y < grid.getHeight(); ++y)
+    {
+        for (int x = 0; x < grid.getWidth(); ++x)
+        {
+            const Tile tile = grid.get(x, y).tile;
+            const ImU32 color = tileToColor(tile);
+
+            const Uint8 r = (color >> 0) & 0xFF;
+            const Uint8 g = (color >> 8) & 0xFF;
+            const Uint8 b = (color >> 16) & 0xFF;
+            const Uint8 a = (color >> 24) & 0xFF;
+
+            for (int pixelY = 0; pixelY < scale; ++pixelY)
+            {
+                for (int pixelX = 0; pixelX < scale; ++pixelX)
+                {
+                    const int imageX = x * scale + pixelX;
+                    const int imageY = y * scale + pixelY;
+
+                    if (!SDL_WriteSurfacePixel(
+                            surface,
+                            imageX,
+                            imageY,
+                            r,
+                            g,
+                            b,
+                            a))
+                    {
+                        SDL_DestroySurface(surface);
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    const bool success = IMG_SavePNG(
+        surface,
+        path.c_str());
+
+    SDL_DestroySurface(surface);
+
+    return success;
 }

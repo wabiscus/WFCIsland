@@ -4,6 +4,7 @@
 #include "WFC.hpp"
 #include "ShapeGenerator.hpp"
 #include "Utils.hpp"
+#include "Renderer.hpp"
 
 enum class GenerationEvent
 {
@@ -18,15 +19,14 @@ enum class GenerationEvent
 class App
 {
 public:
-    App(Grid &grid, Ruleset &ruleset, ShapeGenerator &shape, WFC &wfc);
+    App(Grid &grid, Ruleset &ruleset, ShapeGenerator &shape, WFC &wfc, Renderer &renderer);
 
     void handleEvent(GenerationEvent event);
 
     GenerationState getGenerationState() const;
 
     void update();
-    void render();
-    void renderUI();
+    void render(int offsetX, int offsetY, bool showGrid, bool showPossibilities);
 
     //// Grid interface
     int getWidth() const;
@@ -36,6 +36,9 @@ public:
 
     ////
     int &getInfluencePointsCount();
+
+    ////
+    void exportIsland();
 
     //// WFC interface
 
@@ -72,6 +75,7 @@ private:
     Ruleset &m_ruleset;
     ShapeGenerator &m_shapeGenerator;
     WFC &m_wfc;
+    Renderer &m_renderer;
     unsigned int m_seed;
     std::mt19937 m_seedGenerator;
 
