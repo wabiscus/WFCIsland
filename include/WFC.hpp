@@ -31,19 +31,18 @@ public:
 
     void generateStep();
 
-    bool isGenerating() const;
-
-    void startGeneration();
-
     void setRuleset(RulesetType newRulset);
 
     void resetPossibilities();
 
     bool isFinished() const;
 
+    void setSeed(unsigned int seed);
+
 private:
     Grid &m_grid;
     Ruleset &m_ruleset;
+    unsigned int m_seed;
     std::mt19937 m_generator;
     bool m_contradiction = false;
     std::queue<CellPosition> m_propagationQueue;

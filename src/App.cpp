@@ -97,6 +97,7 @@ void App::setupFSM()
         GenerationState::Shape,
         [this]()
         {
+            randomizeSeed();
             m_wfc.regenerateMap();
             m_shapeGenerator.generate(m_influencePointCount, m_sharpness, m_roundness);
             m_shapeGenerator.connectPoints();
@@ -223,6 +224,25 @@ void App::toggleGeneration()
 bool App::isGeneratingRunning() const
 {
     return m_generationRunning;
+}
+
+void App::setSeed(unsigned int seed)
+{
+    m_seed = seed;
+
+    m_seedGenerator.seed(m_seed);
+    m_wfc.setSeed(m_seedGenerator());
+    m_shapeGenerator.setSeed(m_seedGenerator());
+}
+
+unsigned int App::getSeed() const
+{
+    return m_seed;
+}
+
+void App::randomizeSeed()
+{
+    setSeed(std::random_device{}());
 }
 
 void App::generateIsland()

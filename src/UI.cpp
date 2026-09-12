@@ -61,6 +61,8 @@ void UI::render(App &app)
             m_isBoundaryDefined = true;
         }
 
+        ImGui::Text("Seed : %u", app.getSeed());
+
         ImGui::Separator();
 
         ImGui::Checkbox("Show grid", &m_showGrid);

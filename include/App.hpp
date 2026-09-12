@@ -44,6 +44,9 @@ public:
     void generateStepbyStep();
     void toggleGeneration();
     bool isGeneratingRunning() const;
+    void setSeed(unsigned int seed);
+    unsigned int getSeed() const;
+    void randomizeSeed();
 
     //// Ruleset interface
     std::vector<Tile> getAllowedNeighbors(Tile tile) const;
@@ -69,6 +72,8 @@ private:
     Ruleset &m_ruleset;
     ShapeGenerator &m_shapeGenerator;
     WFC &m_wfc;
+    unsigned int m_seed;
+    std::mt19937 m_seedGenerator;
 
     FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
 

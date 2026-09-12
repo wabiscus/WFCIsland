@@ -8,7 +8,8 @@ WFC::WFC(
     Ruleset &ruleset)
     : m_grid(grid),
       m_ruleset(ruleset),
-      m_generator(std::random_device{}())
+      m_seed(std::random_device{}()),
+      m_generator(m_seed)
 {
 }
 
@@ -288,4 +289,10 @@ void WFC::resetPossibilities()
 bool WFC::isFinished() const
 {
     return !m_grid.hasUnknownCells();
+}
+
+void WFC::setSeed(unsigned int seed)
+{
+    m_seed = seed;
+    m_generator.seed(seed);
 }

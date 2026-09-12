@@ -7,15 +7,19 @@
 #include <iostream>
 #include <utility>
 
-ShapeGenerator::ShapeGenerator(Grid &grid, Ruleset &ruleset) : m_grid(grid), m_ruleset(ruleset)
+ShapeGenerator::ShapeGenerator(
+    Grid &grid,
+    Ruleset &ruleset)
+    : m_grid(grid),
+      m_ruleset(ruleset),
+      m_seed(std::random_device{}()),
+      m_generator(m_seed)
 {
 }
 
 void ShapeGenerator::generate(int influencePointCount, float sharpness, float roundness)
 {
     m_points.clear();
-    std::random_device rd;
-    std::mt19937 generator(rd());
 
     const Scope &scope = m_grid.getScope();
 
@@ -42,13 +46,13 @@ void ShapeGenerator::generate(int influencePointCount, float sharpness, float ro
             -maxAngleOffset,
             maxAngleOffset);
 
-        angle += offsetDistribution(generator);
+        angle += offsetDistribution(m_generator);
 
         std::uniform_real_distribution<float> radiusDistribution(
             0.0f,
             variation);
 
-        float radius = maxRadius - radiusDistribution(generator);
+        float radius = maxRadius - radiusDistribution(m_generator);
 
         float x = centerX + std::cos(angle) * radius;
         float y = centerY + std::sin(angle) * radius;
@@ -198,4 +202,10 @@ void ShapeGenerator::fillOutsideWithWater()
             }
         }
     }
+}
+
+void ShapeGenerator::setSeed(unsigned int seed)
+{
+    m_seed = seed;
+    m_generator.seed(seed);
 }
