@@ -131,31 +131,17 @@ std::vector<int> &Ruleset::getWeights(
 {
     auto it = m_weights.find(possibilities);
 
-    if (it == m_weights.end())
-    {
-        std::cout << "Missing weights: { ";
+    if (it != m_weights.end())
+        return it->second;
 
-        for (Tile tile : possibilities)
-            std::cout << tileToString(tile) << " ";
+    std::vector<int> defaultWeights(
+        possibilities.size(),
+        1);
 
-        std::cout << "}\n";
+    auto [insertedIt, inserted] =
+        m_weights.emplace(possibilities, defaultWeights);
 
-        std::cout << "Available weights:\n";
-
-        for (const auto &[tiles, weights] : m_weights)
-        {
-            std::cout << "{ ";
-
-            for (Tile tile : tiles)
-                std::cout << tileToString(tile) << " ";
-
-            std::cout << "}\n";
-        }
-
-        throw std::out_of_range("Missing weights");
-    }
-
-    return it->second;
+    return insertedIt->second;
 }
 
 void Ruleset::setWeights(
