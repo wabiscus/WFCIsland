@@ -52,6 +52,7 @@ add_executable(
     src/App.cpp
     src/Utils.cpp
     src/FileExporter.cpp
+    src/IslandExporter.cpp
 
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

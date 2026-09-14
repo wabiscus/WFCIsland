@@ -6,6 +6,7 @@
 #include "Utils.hpp"
 #include "Renderer.hpp"
 #include "FileExporter.hpp"
+#include "IslandExporter.hpp"
 
 enum class GenerationEvent
 {
@@ -39,7 +40,8 @@ public:
     int &getInfluencePointsCount();
 
     ////
-    bool exportIsland();
+    bool exportIslandPNG();
+    bool exportIslandJson();
 
     //// WFC interface
 
@@ -80,6 +82,7 @@ private:
     unsigned int m_seed;
     std::mt19937 m_seedGenerator;
     FileExporter m_fileExporter;
+    IslandExporter m_islandExporter;
 
     FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
 

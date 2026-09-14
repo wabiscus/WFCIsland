@@ -266,7 +266,7 @@ int &App::getInfluencePointsCount()
     return m_influencePointCount;
 }
 
-bool App::exportIsland()
+bool App::exportIslandPNG()
 {
     constexpr int exportScale = 8;
 
@@ -285,6 +285,20 @@ bool App::exportIsland()
 
     return m_fileExporter.save(
         pngData,
+        filename);
+}
+
+bool App::exportIslandJson()
+{
+    const std::string filename =
+        "island_" +
+        std::to_string(m_seed) +
+        ".json";
+
+    return m_islandExporter.exportJson(
+        m_grid,
+        m_seed,
+        m_ruleset.getName(),
         filename);
 }
 

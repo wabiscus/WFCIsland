@@ -265,8 +265,14 @@ void UI::render(App &app)
 
         if (ImGui::Button("Export Island Image"))
         {
-            app.exportIsland();
+            app.exportIslandPNG();
         }
+
+        if (ImGui::Button("Export Island Json"))
+        {
+            app.exportIslandJson();
+        }
+        
 
         break;
     }
