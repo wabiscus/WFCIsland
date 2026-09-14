@@ -121,9 +121,8 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
     }
 }
 
-bool Renderer::exportImage(
+std::vector<Uint8> Renderer::exportImage(
     const Grid &grid,
-    const std::string &path,
     int scale)
 {
     const int width = grid.getWidth() * scale;
@@ -135,7 +134,7 @@ bool Renderer::exportImage(
         SDL_PIXELFORMAT_RGBA32);
 
     if (surface == nullptr)
-        return false;
+        return {};
 
     for (int y = 0; y < grid.getHeight(); ++y)
     {
@@ -166,18 +165,51 @@ bool Renderer::exportImage(
                             a))
                     {
                         SDL_DestroySurface(surface);
-                        return false;
+                        return {};
                     }
                 }
             }
         }
     }
 
-    const bool success = IMG_SavePNG(
-        surface,
-        path.c_str());
+    SDL_IOStream *io = SDL_IOFromDynamicMem();
 
+    if (io == nullptr)
+    {
+        SDL_DestroySurface(surface);
+        return {};
+    }
+
+    if (!IMG_SavePNG_IO(surface, io, false))
+    {
+        SDL_CloseIO(io);
+        SDL_DestroySurface(surface);
+        return {};
+    }
+
+    const Sint64 size = SDL_GetIOSize(io);
+
+    if (size <= 0)
+    {
+        SDL_CloseIO(io);
+        SDL_DestroySurface(surface);
+        return {};
+    }
+
+    SDL_SeekIO(io, 0, SDL_IO_SEEK_SET);
+
+    std::vector<Uint8> data(static_cast<std::size_t>(size));
+
+    const std::size_t bytesRead = SDL_ReadIO(
+        io,
+        data.data(),
+        data.size());
+
+    SDL_CloseIO(io);
     SDL_DestroySurface(surface);
 
-    return success;
+    if (bytesRead != data.size())
+        return {};
+
+    return data;
 }

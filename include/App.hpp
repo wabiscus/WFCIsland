@@ -5,6 +5,7 @@
 #include "ShapeGenerator.hpp"
 #include "Utils.hpp"
 #include "Renderer.hpp"
+#include "FileExporter.hpp"
 
 enum class GenerationEvent
 {
@@ -38,7 +39,7 @@ public:
     int &getInfluencePointsCount();
 
     ////
-    void exportIsland();
+    bool exportIsland();
 
     //// WFC interface
 
@@ -78,6 +79,7 @@ private:
     Renderer &m_renderer;
     unsigned int m_seed;
     std::mt19937 m_seedGenerator;
+    FileExporter m_fileExporter;
 
     FSM<GenerationState, GenerationEvent> m_fsm{GenerationState::Empty};
 

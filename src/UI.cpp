@@ -263,7 +263,7 @@ void UI::render(App &app)
             ImGui::EndCombo();
         }
 
-        if (ImGui::Button("Export Island"))
+        if (ImGui::Button("Export Island Image"))
         {
             app.exportIsland();
         }

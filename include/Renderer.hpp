@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include <string>
+#include <vector>
 
 class Grid;
 
@@ -12,7 +13,7 @@ public:
 
     void render(const Grid& grid, int offsetX, int offsetY, bool showGrid, bool showPossibilities);
 
-    bool exportImage(const Grid& grid, const std::string& path, int scale);
+    std::vector<Uint8> exportImage(const Grid& grid, int scale);
 
 private:
     SDL_Renderer* m_renderer;

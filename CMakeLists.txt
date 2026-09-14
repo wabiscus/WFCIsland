@@ -51,6 +51,7 @@ add_executable(
     src/Ruleset.cpp
     src/App.cpp
     src/Utils.cpp
+    src/FileExporter.cpp
 
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp

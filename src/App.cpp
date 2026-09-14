@@ -1,8 +1,4 @@
 #include "App.hpp"
-#include <chrono>
-#include <ctime>
-#include <iomanip>
-#include <sstream>
 
 App::App(
     Grid &grid,
@@ -270,25 +266,26 @@ int &App::getInfluencePointsCount()
     return m_influencePointCount;
 }
 
-void App::exportIsland()
+bool App::exportIsland()
 {
-    const auto now = std::chrono::system_clock::now();
-    const std::time_t time = std::chrono::system_clock::to_time_t(now);
+    constexpr int exportScale = 8;
 
-    std::tm localTime{};
+    std::vector<Uint8> pngData =
+        m_renderer.exportImage(
+            m_grid,
+            exportScale);
 
-    localtime_s(&localTime, &time);
+    if (pngData.empty())
+        return false;
 
-    std::ostringstream filename;
+    const std::string filename =
+        "island_" +
+        std::to_string(m_seed) +
+        ".png";
 
-    filename << "exports/island_"
-             << std::put_time(&localTime, "%Y%m%d_%H%M%S")
-             << ".png";
-
-    m_renderer.exportImage(
-        m_grid,
-        filename.str(),
-        8);
+    return m_fileExporter.save(
+        pngData,
+        filename);
 }
 
 //// Ruleset interface
