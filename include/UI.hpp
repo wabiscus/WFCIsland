@@ -24,12 +24,7 @@ public:
 private:
     UIPanel m_panel = UIPanel::Left;
     bool m_showGrid = false;
-
     bool m_showPossibilities = false;
-    bool m_isShapeGenerated = false;
-    bool m_isIslandGenerated = false;
-    bool m_isBoundaryDefined = false;
-    bool m_isBoundaryNotSet = true;
 
     bool m_seedInitialized = false;
     unsigned int m_seed = 0;

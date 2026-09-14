@@ -33,6 +33,23 @@ void drawTileLabel(Tile tile)
 
 void UI::render(App &app)
 {
+    const GenerationState state =
+        app.getGenerationState();
+
+    const bool canGenerateShape =
+        state != GenerationState::Generating &&
+        state != GenerationState::GeneratingInstantly;
+
+    const bool canDefineBoundary =
+        state == GenerationState::Shape ||
+        state == GenerationState::BoundariesDefined;
+
+    const bool canGenerate =
+        state == GenerationState::BoundariesDefined;
+
+    const bool canRestoreShape =
+        state == GenerationState::Generated;
+
     if (!m_seedInitialized)
     {
         m_seed = app.getSeed();
@@ -58,28 +75,47 @@ void UI::render(App &app)
 
         ImGui::Text("Current state: %s", stateToString(app.getGenerationState()));
 
+        if (!canGenerateShape)
+        {
+            ImGui::BeginDisabled();
+        }
+
         ImGui::Spacing();
-        if (ImGui::Button("Generate Island Shape"))
+        if (ImGui::Button("Generate Island Shape", ImVec2(-1, 0)))
         {
             app.randomizeSeed();
             m_seed = app.getSeed();
             app.handleEvent(GenerationEvent::GenerateShape);
-            m_isIslandGenerated = false;
-            m_isShapeGenerated = true;
-            m_isBoundaryDefined = true;
         }
 
+        if (!canGenerateShape)
+        {
+            ImGui::EndDisabled();
+        }
+
+        ImGui::Separator();
+
         ImGui::Text("Seed : %u", app.getSeed());
+
+        if (!canGenerateShape)
+        {
+            ImGui::BeginDisabled();
+        }
 
         ImGui::InputScalar(
             "Seed",
             ImGuiDataType_U32,
             &m_seed);
+
         if (ImGui::Button("Set Seed"))
         {
             app.setSeed(m_seed);
             m_seed = app.getSeed();
             app.handleEvent(GenerationEvent::GenerateShape);
+        }
+        if (!canGenerateShape)
+        {
+            ImGui::EndDisabled();
         }
 
         ImGui::Separator();
@@ -87,6 +123,11 @@ void UI::render(App &app)
         ImGui::Checkbox("Show grid", &m_showGrid);
 
         ImGui::Separator();
+
+        if (!canGenerateShape)
+        {
+            ImGui::BeginDisabled();
+        }
 
         ImGui::SliderInt("Points", &app.getInfluencePointsCount(), 3, 20);
         ImGui::Spacing();
@@ -104,10 +145,6 @@ void UI::render(App &app)
                 scopeSizes,
                 IM_ARRAYSIZE(scopeSizes)))
         {
-            m_isIslandGenerated = false;
-            m_isShapeGenerated = true;
-            m_isBoundaryDefined = true;
-
             app.setScopeSize(static_cast<ScopeSize>(currentScope));
             app.handleEvent(GenerationEvent::GenerateShape);
         }
@@ -127,6 +164,11 @@ void UI::render(App &app)
             -1.0f,
             1.0f,
             "%.2f");
+
+        if (!canGenerateShape)
+        {
+            ImGui::EndDisabled();
+        }
 
         ImGui::Separator();
 
@@ -164,25 +206,46 @@ void UI::render(App &app)
             drawTileLabel(tileNeighbor);
         }
 
-        if (!m_isBoundaryDefined)
+        if (!canDefineBoundary)
         {
             ImGui::BeginDisabled();
         }
 
-        if (ImGui::Button(m_isBoundaryNotSet ? "Define Boundary" : "Refine Boundary"))
+        const char *boundaryLabel =
+            state == GenerationState::Shape
+                ? "Define Boundary"
+                : "Refine Boundary";
+
+        if (ImGui::Button(boundaryLabel))
         {
             app.handleEvent(GenerationEvent::DefineBoundary);
-            m_isBoundaryNotSet = false;
         }
 
-        if (!m_isBoundaryDefined)
+        if (!canDefineBoundary)
         {
             ImGui::EndDisabled();
         }
 
         ImGui::Separator();
 
-        if (m_isIslandGenerated)
+        if (!canRestoreShape)
+        {
+            ImGui::BeginDisabled();
+        }
+
+        if (ImGui::Button("Restore Island Shape"))
+        {
+            app.handleEvent(GenerationEvent::RestoreBoundaries);
+        }
+
+        if (!canRestoreShape)
+        {
+            ImGui::EndDisabled();
+        }
+
+        ImGui::Separator();
+
+        if (!canGenerate)
         {
             ImGui::BeginDisabled();
         }
@@ -192,20 +255,10 @@ void UI::render(App &app)
             app.generateOneStep();
         }
 
-        if (m_isIslandGenerated)
-        {
-            ImGui::EndDisabled();
-        }
-
-        if (!m_isShapeGenerated)
-        {
-            ImGui::BeginDisabled();
-        }
-
         if (ImGui::Button("Generate Island"))
         {
             app.handleEvent(GenerationEvent::GenerateIsland);
-            m_isIslandGenerated = true;
+            // m_isIslandGenerated = true;
         }
 
         if (ImGui::Button("Generate Step By Step"))
@@ -213,21 +266,30 @@ void UI::render(App &app)
             app.handleEvent(GenerationEvent::GenerateStepByStep);
         }
 
+        if (!canGenerate)
+        {
+            ImGui::EndDisabled();
+        }
+
+        const bool canPause =
+            state == GenerationState::Generating;
+
+        if (!canPause)
+        {
+            ImGui::BeginDisabled();
+        }
+
         if (ImGui::Button(app.isGeneratingRunning() ? "Pause" : "Play"))
         {
             app.toggleGeneration();
         }
 
-        if (ImGui::Button("Restore Island Shape"))
-        {
-            app.handleEvent(GenerationEvent::RestoreBoundaries);
-            m_isIslandGenerated = false;
-        }
-
-        if (!m_isShapeGenerated)
+        if (!canPause)
         {
             ImGui::EndDisabled();
         }
+
+        ImGui::Separator();
 
         RulesetType currentRuleset = app.getType();
 
@@ -263,6 +325,18 @@ void UI::render(App &app)
             ImGui::EndCombo();
         }
 
+        const bool canExport =
+            state == GenerationState::Shape ||
+            state == GenerationState::BoundariesDefined ||
+            state == GenerationState::Generated;
+
+        if (!canExport)
+        {
+            ImGui::BeginDisabled();
+        }
+
+        ImGui::Separator();
+
         if (ImGui::Button("Export Island Image"))
         {
             app.exportIslandPNG();
@@ -272,7 +346,11 @@ void UI::render(App &app)
         {
             app.exportIslandJson();
         }
-        
+
+        if (!canExport)
+        {
+            ImGui::EndDisabled();
+        }
 
         break;
     }
@@ -382,9 +460,4 @@ bool UI::isGridVisible() const
 bool UI::arePossibilitiesVisible() const
 {
     return m_showPossibilities;
-}
-
-bool UI::isBoundaryDefined() const
-{
-    return m_isBoundaryDefined;
 }
