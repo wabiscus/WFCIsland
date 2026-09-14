@@ -16,17 +16,17 @@
 #include "ShapeGenerator.hpp"
 #include "App.hpp"
 
-SDL_Window* window = nullptr;
-SDL_Renderer* sdlRenderer = nullptr;
+SDL_Window *window = nullptr;
+SDL_Renderer *sdlRenderer = nullptr;
 
-Renderer* renderer = nullptr;
-Ruleset* ruleset = nullptr;
-Grid* grid = nullptr;
-WFC* wfc = nullptr;
-UI* UILeft = nullptr;
-UI* UIRight = nullptr;
-ShapeGenerator* shapegen = nullptr;
-App* app = nullptr;
+Renderer *renderer = nullptr;
+Ruleset *ruleset = nullptr;
+Grid *grid = nullptr;
+WFC *wfc = nullptr;
+UI *UILeft = nullptr;
+UI *UIRight = nullptr;
+ShapeGenerator *shapegen = nullptr;
+App *app = nullptr;
 
 bool running = true;
 
@@ -63,8 +63,7 @@ void mainLoop()
         280,
         0,
         UILeft->isGridVisible(),
-        UILeft->arePossibilitiesVisible()
-    );
+        UILeft->arePossibilitiesVisible());
 
     UILeft->render(*app);
     UIRight->render(*app);
@@ -73,8 +72,7 @@ void mainLoop()
 
     ImGui_ImplSDLRenderer3_RenderDrawData(
         ImGui::GetDrawData(),
-        sdlRenderer
-    );
+        sdlRenderer);
 
     SDL_RenderPresent(sdlRenderer);
 }
@@ -101,8 +99,7 @@ int main()
     {
         SDL_Log(
             "SDL_CreateWindowAndRenderer failed: %s",
-            SDL_GetError()
-        );
+            SDL_GetError());
 
         SDL_Quit();
         return 1;
@@ -111,10 +108,23 @@ int main()
     std::cerr << "=== WINDOW OK ===" << std::endl;
 
     renderer = new Renderer(sdlRenderer);
-    ruleset = new Ruleset(RulesetType::Tropical);
+    std::cerr << "=== RENDERER OK ===" << std::endl;
+
+    try
+    {
+        ruleset = new Ruleset(RulesetType::Tropical);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "Error loading ruleset: " << e.what() << std::endl;
+        return 1;
+    }
+
     grid = new Grid(72, 72);
+    std::cerr << "=== GRID OK ===" << std::endl;
 
     wfc = new WFC(*grid, *ruleset);
+    std::cerr << "=== WFC CONSTRUCTED ===" << std::endl;
 
     std::cerr << "=== BEFORE WFC INIT ===" << std::endl;
 
@@ -132,22 +142,20 @@ int main()
         *ruleset,
         *shapegen,
         *wfc,
-        *renderer
-    );
+        *renderer);
 
     IMGUI_CHECKVERSION();
 
     ImGui::CreateContext();
 
-    ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO &io = ImGui::GetIO();
     (void)io;
 
     ImGui::StyleColorsDark();
 
     ImGui_ImplSDL3_InitForSDLRenderer(
         window,
-        sdlRenderer
-    );
+        sdlRenderer);
 
     ImGui_ImplSDLRenderer3_Init(sdlRenderer);
 
@@ -158,8 +166,7 @@ int main()
     emscripten_set_main_loop(
         mainLoop,
         0,
-        true
-    );
+        true);
 
 #else
 

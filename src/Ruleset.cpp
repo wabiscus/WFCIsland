@@ -1,5 +1,6 @@
 #include "Ruleset.hpp"
 #include <iostream>
+#include <SDL3/SDL.h>
 
 Ruleset::Ruleset(RulesetType type)
 {
@@ -39,7 +40,9 @@ void Ruleset::loadRuleset(RulesetType type)
         throw std::runtime_error("Invalid ruleset type");
     }
 
-    std::ifstream file("/rulesets/" + filename);
+    std::string basePath = SDL_GetBasePath();
+    std::ifstream file(basePath + "rulesets/" + filename);
+
 
     if (!file)
         throw std::runtime_error(
