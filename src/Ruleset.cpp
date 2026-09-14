@@ -39,7 +39,7 @@ void Ruleset::loadRuleset(RulesetType type)
         throw std::runtime_error("Invalid ruleset type");
     }
 
-    std::ifstream file("rulesets/" + filename);
+    std::ifstream file("/rulesets/" + filename);
 
     if (!file)
         throw std::runtime_error(

@@ -79,20 +79,43 @@ target_link_libraries(
     nlohmann_json::nlohmann_json
 )
 
-add_custom_command(TARGET WFC POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL3::SDL3>
-        $<TARGET_FILE_DIR:WFC>
-)
+if(NOT EMSCRIPTEN)
+    add_custom_command(TARGET WFC POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3::SDL3>
+            $<TARGET_FILE_DIR:WFC>
+    )
 
-add_custom_command(TARGET WFC POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        $<TARGET_FILE:SDL3_image::SDL3_image>
-        $<TARGET_FILE_DIR:WFC>
-)
+    add_custom_command(TARGET WFC POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            $<TARGET_FILE:SDL3_image::SDL3_image>
+            $<TARGET_FILE_DIR:WFC>
+    )
+endif()
+
+if(EMSCRIPTEN)
+    set_target_properties(WFC PROPERTIES SUFFIX ".html")
+
+    target_link_options(WFC PRIVATE
+        "-sALLOW_MEMORY_GROWTH=1"
+    )
+endif()
 
 add_custom_command(TARGET WFC POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/rulesets
         $<TARGET_FILE_DIR:WFC>/rulesets
 )
+
+if(EMSCRIPTEN)
+    target_link_options(WFC PRIVATE
+        "--preload-file=${CMAKE_SOURCE_DIR}/rulesets@rulesets"
+    )
+endif()
+
+if(EMSCRIPTEN)
+    target_link_options(WFC PRIVATE
+        "--preload-file=${CMAKE_SOURCE_DIR}/rulesets@rulesets"
+        "-sNO_DISABLE_EXCEPTION_CATCHING"
+    )
+endif()
