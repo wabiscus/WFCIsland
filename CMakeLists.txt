@@ -53,6 +53,8 @@ add_executable(
     src/Utils.cpp
     src/FileExporter.cpp
     src/IslandExporter.cpp
+    src/JsDownload.cpp
+    src/NativeFileDialog.cpp
 
     external/imgui/imgui.cpp
     external/imgui/imgui_draw.cpp
@@ -117,5 +119,12 @@ if(EMSCRIPTEN)
     target_link_options(WFC PRIVATE
         "--preload-file=${CMAKE_SOURCE_DIR}/rulesets@rulesets"
         "-sNO_DISABLE_EXCEPTION_CATCHING"
+    )
+endif()
+
+if(EMSCRIPTEN)
+    target_link_options(WFC PRIVATE
+        "-sALLOW_MEMORY_GROWTH=1"
+        "-sEXPORTED_RUNTIME_METHODS=['HEAPU8']"
     )
 endif()

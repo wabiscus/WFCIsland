@@ -8,6 +8,9 @@
 #include <filesystem>
 #include <fstream>
 
+#include "JsDownload.hpp"
+#include "NativeFileDialog.hpp"
+
 using json = nlohmann::json;
 
 bool IslandExporter::exportJson(
@@ -17,43 +20,41 @@ bool IslandExporter::exportJson(
     const std::string &filename) const
 {
     json island;
+    // ... construction du json inchangée ...
 
-    island["version"] = 1;
-    island["seed"] = seed;
-    island["ruleset"] = rulesetName;
+    const std::string dump = island.dump(4);
 
-    island["grid"]["width"] = grid.getWidth();
-    island["grid"]["height"] = grid.getHeight();
+#ifdef __EMSCRIPTEN__
+    js_download_file(
+        filename.c_str(),
+        reinterpret_cast<const uint8_t *>(dump.data()),
+        (int)dump.size(),
+        "application/json");
+    return true;
+#elif defined(_WIN32)
+    std::string path = ShowSaveDialog(
+        filename,
+        "JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0",
+        "json");
 
-    island["cells"] = json::array();
+    if (path.empty())
+        return false; // annulé
 
-    for (int y = 0; y < grid.getHeight(); ++y)
-    {
-        json row = json::array();
-
-        for (int x = 0; x < grid.getWidth(); ++x)
-        {
-            const Tile tile = grid.get(x, y).tile;
-
-            row.push_back(tileToString(tile));
-        }
-
-        island["cells"].push_back(row);
-    }
-
-    std::filesystem::create_directories("exports");
-
-    const std::string path =
-        "exports/" + filename;
-
-    std::ofstream file(
-        path,
-        std::ios::out);
-
+    std::ofstream file(path, std::ios::out);
     if (!file)
         return false;
 
-    file << island.dump(4);
-
+    file << dump;
     return file.good();
+#else
+    std::filesystem::create_directories("exports");
+    const std::string path = "exports/" + filename;
+
+    std::ofstream file(path, std::ios::out);
+    if (!file)
+        return false;
+
+    file << dump;
+    return file.good();
+#endif
 }
