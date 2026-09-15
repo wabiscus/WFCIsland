@@ -100,6 +100,7 @@ if(EMSCRIPTEN)
 
     target_link_options(WFC PRIVATE
         "-sALLOW_MEMORY_GROWTH=1"
+        "--shell-file=${CMAKE_SOURCE_DIR}/web/shell.html"
     )
 endif()
 
@@ -108,12 +109,6 @@ add_custom_command(TARGET WFC POST_BUILD
         ${CMAKE_SOURCE_DIR}/rulesets
         $<TARGET_FILE_DIR:WFC>/rulesets
 )
-
-if(EMSCRIPTEN)
-    target_link_options(WFC PRIVATE
-        "--preload-file=${CMAKE_SOURCE_DIR}/rulesets@rulesets"
-    )
-endif()
 
 if(EMSCRIPTEN)
     target_link_options(WFC PRIVATE
@@ -128,3 +123,4 @@ if(EMSCRIPTEN)
         "-sEXPORTED_RUNTIME_METHODS=['HEAPU8']"
     )
 endif()
+

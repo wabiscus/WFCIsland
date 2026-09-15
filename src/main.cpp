@@ -79,15 +79,11 @@ void mainLoop()
 
 int main()
 {
-    std::cerr << "=== MAIN START ===" << std::endl;
-
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
         SDL_Log("SDL_Init failed: %s", SDL_GetError());
         return 1;
     }
-
-    std::cerr << "=== SDL INIT OK ===" << std::endl;
 
     if (!SDL_CreateWindowAndRenderer(
             "WFC",
@@ -105,10 +101,7 @@ int main()
         return 1;
     }
 
-    std::cerr << "=== WINDOW OK ===" << std::endl;
-
     renderer = new Renderer(sdlRenderer);
-    std::cerr << "=== RENDERER OK ===" << std::endl;
 
     try
     {
@@ -121,12 +114,8 @@ int main()
     }
 
     grid = new Grid(72, 72);
-    std::cerr << "=== GRID OK ===" << std::endl;
 
     wfc = new WFC(*grid, *ruleset);
-    std::cerr << "=== WFC CONSTRUCTED ===" << std::endl;
-
-    std::cerr << "=== BEFORE WFC INIT ===" << std::endl;
 
     wfc->initialize();
 
@@ -134,8 +123,6 @@ int main()
     UIRight = new UI(UIPanel::Right);
 
     shapegen = new ShapeGenerator(*grid, *ruleset);
-
-    std::cerr << "=== BEFORE APP ===" << std::endl;
 
     app = new App(
         *grid,
@@ -158,8 +145,6 @@ int main()
         sdlRenderer);
 
     ImGui_ImplSDLRenderer3_Init(sdlRenderer);
-
-    std::cerr << "=== INIT COMPLETE ===" << std::endl;
 
 #ifdef __EMSCRIPTEN__
 
