@@ -39,6 +39,26 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(nlohmann_json)
 
+option(BUILD_DOCS "Build documentation with Doxygen" OFF)
+
+if(BUILD_DOCS)
+    find_package(Doxygen REQUIRED)
+
+    configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+        ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        @ONLY
+    )
+
+    add_custom_target(docs
+        COMMAND ${DOXYGEN_EXECUTABLE}
+                ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Generating documentation with Doxygen"
+        VERBATIM
+    )
+endif()
+
 add_executable(
     WFC
 

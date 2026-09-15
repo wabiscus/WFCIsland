@@ -107,7 +107,7 @@ void Renderer::render(const Grid &grid, int offsetX, int offsetY, bool showGrid,
 
             SDL_RenderFillRect(m_renderer, &rect);
 
-            // Grille uniquement dans le scope
+            // Grid specific in the scope
             if (showGrid &&
                 x >= scope.x &&
                 x < scope.x + scope.width &&

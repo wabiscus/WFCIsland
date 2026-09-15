@@ -86,11 +86,6 @@ void App::setupFSM()
         GenerationEvent::RestoreBoundaries,
         GenerationState::BoundariesDefined);
 
-    // Génération terminée automatiquement.
-    // m_fsm.addAutomaticTransition(
-    //     GenerationState::Generating,
-    //     GenerationState::Generated);
-
     // ---------------------------------------------------------
     // Enter Shape
     // ---------------------------------------------------------
@@ -332,6 +327,7 @@ std::vector<int> &App::getWeights(const std::vector<Tile> &possibilities)
 {
     return m_ruleset.getWeights(possibilities);
 }
+
 ////
 
 const Scope &App::getScope() const

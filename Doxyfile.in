@@ -1,0 +1,24 @@
+PROJECT_NAME           = "WFC"
+
+OUTPUT_DIRECTORY       = "@CMAKE_CURRENT_BINARY_DIR@/docs"
+
+INPUT                  = "@CMAKE_SOURCE_DIR@/src" \
+                         "@CMAKE_SOURCE_DIR@/include"
+
+RECURSIVE              = YES
+
+FILE_PATTERNS          = *.h \
+                         *.hpp \
+                         *.cpp
+
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+EXTRACT_ALL             = YES
+
+HAVE_DOT               = YES
+CALL_GRAPH              = YES
+CALLER_GRAPH            = YES
+
+QUIET                  = NO
+WARN_IF_UNDOCUMENTED   = NO

@@ -30,6 +30,9 @@ const char *tileToString(Tile tile)
 
     case Tile::Contradiction:
         return "Contradiction";
+        
+    case Tile::Boundary:
+        return "Boundary";
     }
 
     return "Unknown";
@@ -141,6 +144,9 @@ const char *stateToString(GenerationState state)
 
     case GenerationState::Generating:
         return "Generating";
+
+    case GenerationState::GeneratingInstantly:
+        return "GenerateInstant";
 
     case GenerationState::Generated:
         return "Generated";

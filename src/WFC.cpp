@@ -26,22 +26,6 @@ void WFC::initialize()
     }
 }
 
-void WFC::generate()
-{
-    std::uniform_int_distribution<int> xDistribution(
-        0,
-        m_grid.getWidth() - 1);
-
-    std::uniform_int_distribution<int> yDistribution(
-        0,
-        m_grid.getHeight() - 1);
-
-    int x = xDistribution(m_generator);
-    int y = yDistribution(m_generator);
-
-    m_grid.set(x, y, Tile::Grass);
-}
-
 void WFC::regenerateMap()
 {
     Cell water(Tile::Water);
@@ -248,10 +232,6 @@ void WFC::generateStep()
 
     collapse();
     propagateUntilStable();
-    // if (!m_grid.hasUnknownCells())
-    // {
-    //     m_fsm.transitionTo(GenerationState::Generated);
-    // }
 }
 
 void WFC::setRuleset(RulesetType type)
@@ -278,13 +258,6 @@ void WFC::resetPossibilities()
         }
     }
 }
-
-// void WFC::startGeneration()
-// {
-//     m_contradiction = false;
-//     m_propagationQueue = {};
-//     // éventuelle initialisation de la propagation
-// }
 
 bool WFC::isFinished() const
 {
