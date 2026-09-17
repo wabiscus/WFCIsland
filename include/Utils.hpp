@@ -4,7 +4,7 @@
 #include "imgui.h"
 #include <string>
 #include <stdexcept>
-
+#include <SDL3/SDL.h>
 /**
  * @brief Enum representing the different types of rulesets available
  */
@@ -70,3 +70,5 @@ ImU32 tileToColor(Tile tile);
  * @return The string representation of the generation state
  */
 const char *stateToString(GenerationState state);
+
+bool openURL(const char* url);

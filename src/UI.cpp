@@ -352,6 +352,13 @@ void UI::render(App &app)
             ImGui::EndDisabled();
         }
 
+        ImGui::Separator();
+
+        if (ImGui::Button("Report Bug"))
+        {
+            app.reportBug();
+        }
+
         break;
     }
     case UIPanel::Right:

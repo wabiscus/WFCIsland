@@ -154,3 +154,7 @@ const char *stateToString(GenerationState state)
 
     return "Unknown";
 }
+
+bool openURL(const char* url){
+    return SDL_OpenURL(url);
+}

@@ -359,3 +359,16 @@ void App::switchRuleset(RulesetType type)
 {
     m_wfc.setRuleset(type);
 }
+
+void App::reportBug()
+{
+    constexpr const char *bugReportURL =
+        "https://github.com/wabiscus/WFCIsland/issues/new?template=bug_report.yml";
+
+    if (!openURL(bugReportURL))
+    {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION,
+                     "Failed to open bug report URL: %s",
+                     SDL_GetError());
+    }
+}

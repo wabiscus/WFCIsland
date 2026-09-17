@@ -169,6 +169,8 @@ public:
      */
     void switchRuleset(RulesetType type);
 
+    void reportBug();
+
 private:
     /** @brief Setup the finite state machine for generation */
     void setupFSM();
