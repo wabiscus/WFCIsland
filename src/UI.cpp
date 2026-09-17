@@ -151,19 +151,25 @@ void UI::render(App &app)
 
         ImGui::Separator();
 
-        ImGui::SliderFloat(
-            "Sharpness",
-            &app.getSharpness(),
-            0.0f,
-            5.0f,
-            "%.2f");
+        if (ImGui::SliderFloat(
+                "Sharpness",
+                &app.getSharpness(),
+                0.0f,
+                5.0f,
+                "%.2f"))
+        {
+            app.handleEvent(GenerationEvent::GenerateShape);
+        }
 
-        ImGui::SliderFloat(
-            "Roundness",
-            &app.getRoundness(),
-            -1.0f,
-            1.0f,
-            "%.2f");
+        if (ImGui::SliderFloat(
+                "Roundness",
+                &app.getRoundness(),
+                -1.0f,
+                1.0f,
+                "%.2f"))
+        {
+            app.handleEvent(GenerationEvent::GenerateShape);
+        }
 
         if (!canGenerateShape)
         {
