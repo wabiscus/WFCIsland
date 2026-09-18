@@ -129,7 +129,10 @@ void UI::render(App &app)
             ImGui::BeginDisabled();
         }
 
-        ImGui::SliderInt("Points", &app.getInfluencePointsCount(), 3, 20);
+        if (ImGui::SliderInt("Points", &app.getInfluencePointsCount(), 3, 20))
+        {
+            app.handleEvent(GenerationEvent::GenerateShape);
+        }
         ImGui::Spacing();
 
         const char *scopeSizes[] = {
@@ -156,7 +159,7 @@ void UI::render(App &app)
                 &app.getSharpness(),
                 0.0f,
                 5.0f,
-                "%.2f"))
+                "%.1f"))
         {
             app.handleEvent(GenerationEvent::GenerateShape);
         }
@@ -166,7 +169,7 @@ void UI::render(App &app)
                 &app.getRoundness(),
                 -1.0f,
                 1.0f,
-                "%.2f"))
+                "%.1f"))
         {
             app.handleEvent(GenerationEvent::GenerateShape);
         }

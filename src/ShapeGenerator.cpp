@@ -21,6 +21,7 @@ void ShapeGenerator::generate(int influencePointCount, float sharpness, float ro
 {
     m_points.clear();
 
+    m_generator.seed(m_seed);
     const Scope &scope = m_grid.getScope();
 
     int centerX = scope.x + scope.width / 2;
