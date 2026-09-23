@@ -23,8 +23,7 @@ Renderer *renderer = nullptr;
 Ruleset *ruleset = nullptr;
 Grid *grid = nullptr;
 WFC *wfc = nullptr;
-UI *UILeft = nullptr;
-UI *UIRight = nullptr;
+UI *ui = nullptr;
 ShapeGenerator *shapegen = nullptr;
 App *app = nullptr;
 
@@ -62,11 +61,10 @@ void mainLoop()
     app->render(
         280,
         0,
-        UILeft->isGridVisible(),
-        UILeft->arePossibilitiesVisible());
+        ui->isGridVisible(),
+        ui->arePossibilitiesVisible());
 
-    UILeft->render(*app);
-    UIRight->render(*app);
+    ui->render(*app);
 
     ImGui::Render();
 
@@ -119,8 +117,7 @@ int main()
 
     wfc->initialize();
 
-    UILeft = new UI(UIPanel::Left);
-    UIRight = new UI(UIPanel::Right);
+    ui = new UI();
 
     shapegen = new ShapeGenerator(*grid, *ruleset);
 
